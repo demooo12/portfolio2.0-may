@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actually I've already decided - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 4vw, 4.5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; } /* 取消内嵌按钮组的底边距 */
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Hero Media */
+        .hero-media { width: 100%; aspect-ratio: 16/9; background-color: transparent; margin-bottom: 4rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hero-media img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* 1:2 左右分栏排版 (用于 Concept 和 Execution) */
+        .detail-text-section { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; }
+        .section-content { display: flex; flex-direction: column; }
+        .editorial-text { column-count: 2; column-gap: 2rem; font-size: 1.1rem; color: #333; }
+        .editorial-text p { margin-bottom: 1.5rem; break-inside: avoid; }
+
+        /* 标题在上、内容在下全宽排版 (用于 Interaction Mechanics) */
+        .detail-text-section-full { margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .detail-text-section-full .section-heading { font-size: 1.8rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .detail-text-section-full .editorial-text { column-count: 1; font-size: 1.15rem; line-height: 1.6; color: #333; }
+        .detail-text-section-full .editorial-text p { margin-bottom: 1.5rem; }
+        
+        .sub-heading { font-size: 1.2rem; font-weight: bold; margin-top: 2.5rem; margin-bottom: 0.5rem; border-left: 3px solid #111; padding-left: 10px; text-transform: uppercase; }
+
+        /* 5:5 左右等分排版 (视频/图片 与 文字并排) */
+        .split-50 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin-top: 1rem; margin-bottom: 2rem; }
+        .split-50 .text-block p { font-size: 1.15rem; color: #333; line-height: 1.6; margin-bottom: 0; }
+        .split-50 .media-block video, .split-50 .media-block img { width: 100%; height: auto; display: block; }
+
+        /* 并排展示视频/图片 (2列网格) */
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 1.5rem; margin-bottom: 2.5rem; }
+        .gallery-grid video, .gallery-grid img { width: 100%; height: auto; display: block; }
+
+        /* 居中媒体控制 */
+        .inline-image-wrap { margin-top: 2rem; margin-bottom: 2rem; text-align: center; }
+        .inline-image-wrap.full img, .inline-image-wrap.full video { width: 100%; height: auto; display: block; }
+        .inline-image-wrap.seventy img, .inline-image-wrap.seventy video { width: 70%; height: auto; margin: 0 auto; display: block; }
+
+        /* Video Wrapper */
+        .video-wrapper { margin-bottom: 4rem; }
+        .video-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #111; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* ==================================================== */
+        /* 中英文切换滑块与排版控制 CSS */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            .detail-text-section { grid-template-columns: 1fr; gap: 1rem; }
+            .editorial-text { column-count: 1; }
+            .split-50 { grid-template-columns: 1fr; gap: 1.5rem; }
+            .gallery-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .inline-image-wrap.seventy img, .inline-image-wrap.seventy video { width: 100%; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="Actually I've already decided, But I still want to ask..." data-zh="其实我已经决定了，但我还是想问...">Actually I've already decided, But I still want to ask...</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="SOLO PROJECT" data-zh="个人项目">SOLO PROJECT</span> 
+                        <span data-en="/ WEBCAM-BASED DIGITAL ORACLE" data-zh="/ 基于摄像头的数字神谕">/ WEBCAM-BASED DIGITAL ORACLE</span>
+                    </div>
+                    <div class="link-group">
+                        <a href="https://i-still-wanna-ask.onrender.com" target="_blank" class="action-btn" data-en="Playtest Link ->" data-zh="测试链接 ->">Playtest Link -></a>
+                        <a href="https://youtu.be/go-eSSq0790" target="_blank" class="action-btn" data-en="Project Video ->" data-zh="项目视频 ->">Project Video -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="Concept, Interaction Dev, Visual Design, 3D Modeling" data-zh="概念构思、交互开发、视觉设计与3D建模">Concept, Interaction Dev, Visual Design, 3D Modeling</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="p5.js, ml5.js, Blender, Gemini, Illustrator" data-zh="p5.js, ml5.js, Blender, Gemini, Illustrator">p5.js, ml5.js, Blender, Gemini, Illustrator</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Webcam-based Digital Oracle" data-zh="基于摄像头的交互式数字神谕">Webcam-based Digital Oracle</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2025" data-zh="2025">2025</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="hero-media">
+                <img src="assets/51.png" alt="Digital Oracle Hero Image">
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="The Concept" data-zh="概念构思">The Concept</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="This project is a playful reimagining of the traditional &quot;Magic 8-Ball&quot; or &quot;Book of Answers&quot; concept. It is an interactive web-based system built with p5.js and ml5.js that transforms the act of seeking advice into a whimsical, digital ritual." data-zh="本项目是对传统“魔法8号球”或“答案之书”概念的一次戏谑性重构。它是一个使用 p5.js 和 ml5.js 构建的交互式网页系统，将寻求建议的行为转化为一场异想天开的数字仪式。">This project is a playful reimagining of the traditional "Magic 8-Ball" or "Book of Answers" concept. It is an interactive web-based system built with p5.js and ml5.js that transforms the act of seeking advice into a whimsical, digital ritual.</p>
+                        
+                        <p data-en="Users interact with the system not just through typing, but through physical gestures—specifically, putting their hands together in a prayer-like motion—to summon an animated 3D angel model. The system provides random answers that can be &quot;accepted&quot; or, if unsatisfactory, &quot;burned&quot; away through a click interaction, offering a moment of digital catharsis. The project aims to create a healing, surprising, and engaging experience out of the simple everyday desire for guidance." data-zh="用户不仅通过打字，还通过物理手势（具体来说，是将双手合十做出祈祷动作）与系统交互，以召唤一个动态的 3D 天使模型。系统会提供随机的答案，用户可以“接受”它，或者如果不满意，可以通过点击交互将其“燃烧”掉，从而提供片刻的数字宣泄。该项目旨在从日常简单的寻求指引的愿望中，创造一种治愈、惊喜且引人入胜的体验。">Users interact with the system not just through typing, but through physical gestures—specifically, putting their hands together in a prayer-like motion—to summon an animated 3D angel model. The system provides random answers that can be "accepted" or, if unsatisfactory, "burned" away through a click interaction, offering a moment of digital catharsis. The project aims to create a healing, surprising, and engaging experience out of the simple everyday desire for guidance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-text-section-full">
+                <div class="section-heading" data-en="Interaction Mechanics" data-zh="交互机制">Interaction Mechanics</div>
+                
+                <div class="sub-heading" data-en="Seamless Input" data-zh="无缝输入">Seamless Input</div>
+                <div class="split-50">
+                    <div class="text-block">
+                        <p data-en="The system features a text input listener that automatically triggers when a question mark (&quot;?&quot;) is detected, eliminating redundant clicks and mimicking the fluid flow of a real conversation." data-zh="系统配备了文本输入监听器，当检测到问号（&quot;?&quot;）时会自动触发，消除了多余的点击，模仿了真实对话中流畅的节奏。">The system features a text input listener that automatically triggers when a question mark ("?") is detected, eliminating redundant clicks and mimicking the fluid flow of a real conversation.</p>
+                    </div>
+                    <div class="media-block">
+                        <video src="assets/问号召唤.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                </div>
+
+                <div class="inline-image-wrap full">
+                    <img src="assets/53.png" alt="Interaction Interface" loading="lazy">
+                </div>
+
+                <div class="sub-heading" data-en="Motion Tracking" data-zh="动作追踪">Motion Tracking</div>
+                <div class="split-50">
+                    <div class="text-block">
+                        <p data-en="The system utilizes ml5.js to track the user's facial position and hand gestures via a webcam." data-zh="系统利用 ml5.js 通过网络摄像头追踪用户的面部位置和手势。">The system utilizes ml5.js to track the user's facial position and hand gestures via a webcam.</p>
+                    </div>
+                    <div class="media-block" style="text-align: center;">
+                        <img src="assets/54.png" alt="Motion Tracking Recognition" loading="lazy" style="width: 70%; margin: 0 auto !important;">
+                    </div>
+                </div>
+
+                <div class="sub-heading" data-en="Parallax Follow" data-zh="视差跟随">Parallax Follow</div>
+                <div class="editorial-text">
+                    <p data-en="A paper angel model continuously follows the position of the audience's head in the 3D scene, creating a parallax effect." data-zh="纸天使模型会在 3D 场景中不断跟随观众头部的移动位置，从而产生视差效果。">A paper angel model continuously follows the position of the audience's head in the 3D scene, creating a parallax effect.</p>
+                </div>
+
+                <div class="sub-heading" data-en="Summoning Ritual" data-zh="召唤仪式">Summoning Ritual</div>
+                <div class="editorial-text">
+                    <p data-en="Users physically pose in a prayer-like motion (putting hands together); when the distance between the wrists is close enough (&lt; 130px), the system triggers the function to summon the animated angel and deliver an answer." data-zh="用户在物理世界中做出祈祷般的姿势（双手合十）；当双腕之间的距离足够近（&lt; 130px）时，系统会触发召唤动态天使并给出答案的功能。">Users physically pose in a prayer-like motion (putting hands together); when the distance between the wrists is close enough (< 130px), the system triggers the function to summon the animated angel and deliver an answer.</p>
+                </div>
+                <div class="gallery-grid">
+                    <video src="assets/好的.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    <video src="assets/坏的.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                </div>
+
+                <div class="sub-heading" data-en="Burn & Reset" data-zh="燃烧与重置">Burn & Reset</div>
+                <div class="editorial-text">
+                    <p data-en="If the user is unsatisfied with the given answer, they can click the screen to &quot;burn&quot; the answer away, releasing stress and resetting the system state." data-zh="如果用户对给出的答案不满意，可以点击屏幕将答案“燃烧”掉，以此释放压力并重置系统状态。">If the user is unsatisfied with the given answer, they can click the screen to "burn" the answer away, releasing stress and resetting the system state.</p>
+                </div>
+                <div class="inline-image-wrap seventy">
+                    <video src="assets/燃烧.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                </div>
+
+            </section>
+
+            <section class="detail-text-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="The Execution & AI Integration" data-zh="执行与 AI 融合">The Execution & AI Integration</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="The project was built using p5.js with 3D rendering (WEBGL mode) and integrated ml5.js for computer vision recognition. Visual elements involved a mixed workflow: sketching initial forms, converting them into vector graphics in Illustrator, constructing origami-style 3D models in modelling software, and finally exporting them to p5.js." data-zh="该项目使用带有 3D 渲染（WEBGL 模式）的 p5.js 构建，并集成了 ml5.js 进行计算机视觉识别。视觉元素采用混合工作流：首先绘制初始形态草图，在 Illustrator 中将其转换为矢量图形，在建模软件中构建折纸风格的 3D 模型，最后导出到 p5.js 中。">The project was built using p5.js with 3D rendering (WEBGL mode) and integrated ml5.js for computer vision recognition. Visual elements involved a mixed workflow: sketching initial forms, converting them into vector graphics in Illustrator, constructing origami-style 3D models in modelling software, and finally exporting them to p5.js.</p>
+                        
+                        <p data-en="AI was utilized as an assistant for code syntax and library integration, particularly in aligning ml5.js tracking data with the p5.js WEBGL coordinate system. AI helped generate the algorithm logic for dynamic text scaling (drawStretchedText) and assisted in refining the class structure for state management. All AI-generated code and content were rigorously tested, reviewed, and manually adjusted by the creator to ensure they fit the project's specific narrative and functional requirements." data-zh="AI 被用作代码语法和库集成的助手，特别是在将 ml5.js 的追踪数据与 p5.js 的 WEBGL 坐标系对齐方面。AI 帮助生成了动态文本缩放（drawStretchedText）的算法逻辑，并协助完善了用于状态管理的类结构。所有 AI 生成的代码和内容都经过了创作者的严格测试、审查和手动调整，以确保它们符合项目特定的叙事和功能要求。">AI was utilized as an assistant for code syntax and library integration, particularly in aligning ml5.js tracking data with the p5.js WEBGL coordinate system. AI helped generate the algorithm logic for dynamic text scaling (drawStretchedText) and assisted in refining the class structure for state management. All AI-generated code and content were rigorously tested, reviewed, and manually adjusted by the creator to ensure they fit the project's specific narrative and functional requirements.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div style="border-bottom: 1px solid #111; margin-bottom: 4rem;"></div>
+
+            <section class="video-wrapper">
+                <div class="video-heading" data-en="Project Video" data-zh="项目视频">Project Video</div>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/go-eSSq0790" title="Project Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                langCheckbox.checked = (lang === 'zh');
+
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 替换内容，innerHTML 保护加粗等标签
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化：读取本地缓存同步语言状态
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jiayun Song - Portfolio</title>
+    <style>
+        /* 基础重置与排版设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; 
+            color: #111;
+            line-height: 1.2; 
+            overflow-x: hidden;
+        }
+        /* 简历弹窗打开时，锁定背景滚动 */
+        body.modal-open {
+            overflow: hidden;
+        }
+        
+        /* 布局容器 */
+        .container { display: flex; min-height: 100vh; }
+
+        /* 左侧固定导航条 */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column;
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+
+        /* 胶囊按钮设计 */
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; 
+            margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase;
+            text-decoration: none; color: #111; font-weight: bold;
+            background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* 主内容区 */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* 巨大的自我介绍 (Hero Section) */
+        .hero { margin-bottom: 5rem; max-width: 1200px; }
+        .hero h1 { font-size: clamp(3rem, 6vw, 6rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.05; }
+
+        /* Hero 文本末尾的 Resume 按钮样式 */
+        .hero-resume-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            font-size: clamp(1rem, 2.5vw, 1.8rem); 
+            letter-spacing: 0;
+            text-transform: uppercase;
+            color: #111;
+            text-decoration: none;
+            border: 2px solid #111;
+            border-radius: 50px;
+            padding: 5px 25px;
+            margin-left: 15px;
+            vertical-align: middle;
+            position: relative;
+            top: -5px;
+            transition: all 0.3s ease;
+            background-color: transparent;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .hero-resume-btn:hover { background-color: #111; color: #fff; }
+
+        /* ==================================================== */
+        /* 作品分类悬停标签 (Category Filters) */
+        /* ==================================================== */
+        .category-filters {
+            display: flex; gap: 2.5rem; margin-bottom: 4rem;
+            border-bottom: 1px solid #ccc; flex-wrap: wrap;
+        }
+        .filter-tab {
+            font-size: 1.2rem; font-weight: bold; text-transform: uppercase;
+            color: #999; padding-bottom: 0.8rem; cursor: pointer;
+            position: relative; top: 1px; transition: color 0.3s ease;
+        }
+        .filter-tab.active, .filter-tab:hover { color: #111; border-bottom: 2px solid #111; }
+        
+        .category-content { display: none; animation: fadeIn 0.4s ease; }
+        .category-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 作品列表区 */
+        .project-list { display: flex; flex-direction: column; gap: 4rem; }
+        .project-item {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; 
+            border-top: 1px solid #111; padding-top: 1.5rem;
+        }
+
+        .project-info { display: flex; flex-direction: column; }
+        .project-tags {
+            font-family: monospace; text-transform: uppercase; font-size: 0.85rem;
+            margin-bottom: 0.8rem; display: flex; gap: 8px; color: #555; align-items: center; flex-wrap: wrap;
+        }
+        .tag-team { color: #111; font-weight: bold; border-bottom: 1px solid #111; }
+        .tag-award { color: #b8860b; font-weight: bold; border: 1px solid #b8860b; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+
+        .project-title { font-size: 2.5rem; margin-bottom: 1rem; font-weight: bold; line-height: 1.1; }
+        .project-title a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+        .project-title a:hover { color: #666; }
+        
+        .project-desc { font-size: 1.1rem; color: #555; margin-bottom: 1.5rem; max-width: 95%; line-height: 1.4; }
+        .read-more {
+            margin-top: auto; text-decoration: none; color: #111; font-weight: bold;
+            border-bottom: 1px solid #111; align-self: flex-start; padding-bottom: 2px;
+        }
+        .read-more:hover { color: #666; border-color: #666; }
+
+        /* 作品图片 */
+        .project-media {
+            width: 100%; aspect-ratio: 16/10; background-color: transparent; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden; 
+        }
+        .media-link { display: block; width: 100%; height: 100%; }
+        .project-media img {
+            width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease;
+        }
+        .project-item:hover .project-media img { transform: scale(1.03); }
+
+        /* INFO 版块样式 */
+        .info-section {
+            margin-top: 8rem; padding-top: 4rem; border-top: 1px solid #111; margin-bottom: 5rem;
+        }
+        .info-heading { font-size: 2.5rem; font-weight: bold; margin-bottom: 2rem; text-transform: uppercase; }
+        .info-content { font-size: 1.2rem; line-height: 1.5; color: #333; max-width: 800px; margin-bottom: 3rem; }
+        .info-content p { margin-bottom: 1rem; }
+        
+        .contact-list { list-style: none; font-family: monospace; font-size: 1.1rem; }
+        .contact-list li { margin-bottom: 1rem; display: flex; align-items: center; }
+        .contact-label { font-weight: bold; text-transform: uppercase; color: #555; width: 150px; display: inline-block; }
+        .contact-link { color: #111; text-decoration: none; border-bottom: 1px solid #111; transition: color 0.3s, border-color 0.3s; }
+        .contact-link:hover { color: #666; border-color: #666; }
+
+        /* ==================================================== */
+        /* 简历毛玻璃悬浮弹窗 (Resume Modal) CSS */
+        /* ==================================================== */
+        .resume-modal {
+            display: none; /* 默认隐藏 */
+            position: fixed; z-index: 9999;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background-color: rgba(244, 244, 244, 0.75); /* 半透明背景 */
+            backdrop-filter: blur(8px); /* 高斯模糊 */
+            -webkit-backdrop-filter: blur(8px); /* 兼容 Safari */
+            align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+            overflow-y: auto; /* 内容过长允许滚动 */
+            padding: 2rem 0;
+        }
+        .resume-modal.show {
+            display: flex; opacity: 1;
+        }
+        .resume-modal-content {
+            position: relative;
+            max-width: 900px; /* 电脑端最大宽度 */
+            width: 90%;
+            margin: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15); /* 阴影增加层次感 */
+            background: #fff;
+        }
+        .resume-modal-content img {
+            width: 100%; height: auto; display: block;
+        }
+        .close-modal-btn {
+            position: fixed;
+            top: 20px; right: 30px;
+            color: #111; font-size: 3rem; font-weight: normal;
+            cursor: pointer; z-index: 10000;
+            transition: transform 0.3s ease, color 0.3s ease;
+            line-height: 1;
+        }
+        .close-modal-btn:hover { transform: scale(1.1); color: #666; }
+
+        /* ==================================================== */
+        /* 中英文切换滑块 */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .switch { position: relative; display: inline-block; width: 30px; height: 54px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee; border: 1px solid #111; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 22px; width: 22px; left: 3px; top: 4px;
+            background-color: #111; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl; text-orientation: upright;
+            transform: none; letter-spacing: 0.15em; padding: 15px 6px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar {
+                width: 100%; height: auto; position: relative; flex-direction: row;
+                border-right: none; border-bottom: 1px solid #111; padding: 1rem;
+                justify-content: center; gap: 15px; align-items: center;
+            }
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 8px 15px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            
+            .category-filters { gap: 1rem; justify-content: center; margin-bottom: 2rem; }
+            .filter-tab { font-size: 1rem; text-align: center; }
+
+            .project-item { grid-template-columns: 1fr; }
+            .project-media { order: -1; }
+            .info-section { margin-top: 5rem; padding-top: 3rem; }
+            .contact-list li { flex-direction: column; align-items: flex-start; gap: 5px; margin-bottom: 1.5rem; }
+            .contact-label { width: auto; }
+            
+            .hero-resume-btn { margin-left: 0; margin-top: 15px; top: 0; display: inline-block; }
+            
+            /* 手机端弹窗样式微调 */
+            .resume-modal { padding: 4rem 0 2rem 0; align-items: flex-start; } /* 顶部留出X按钮空间 */
+            .close-modal-btn { top: 10px; right: 20px; font-size: 2.5rem; }
+            .resume-modal-content { width: 95%; margin: 0 auto; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="#" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+            <a href="#" onclick="openResume(event)" class="nav-pill" data-en="RESUME" data-zh="简历">RESUME</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <section class="hero">
+                <h1>
+                    <span data-en="Hi! I'm a multidisciplinary designer & illustrator. I explore the intersection of interactive technology, speculative narratives, and user experience. I also excel at harnessing AI tools to bring my creative inspirations to life." data-zh="你好！我是一名多学科设计师与插画师。我致力于探索交互技术、推测性叙事与用户体验的交汇点，并擅长利用 AI 工具将创意灵感转化为现实。">Hi! I'm a multidisciplinary designer & illustrator. I explore the intersection of interactive technology, speculative narratives, and user experience. I also excel at harnessing AI tools to bring my creative inspirations to life.</span>
+                    <a href="#" onclick="openResume(event)" class="hero-resume-btn" data-en="RESUME ->" data-zh="简历 ->">RESUME -></a>
+                </h1>
+            </section>
+
+            <div class="category-filters" id="works">
+                <div class="filter-tab active" data-target="interactive" data-en="Interactive & Games" data-zh="交互与游戏">Interactive & Games</div>
+                <div class="filter-tab" data-target="brand" data-en="Brand, Book & Graphic" data-zh="品牌、书籍、平面">Brand, Book & Graphic</div>
+            </div>
+
+            <div class="category-content active" id="interactive">
+                <section class="project-list">
+                    
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                                <span>/</span>
+                                <span data-en="INTERACTIVE WEB ARCHIVE & GAME" data-zh="交互网页档案与游戏">INTERACTIVE WEB ARCHIVE & GAME</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-01.html">MarriagEmArkeT</a></h2>
+                            <p class="project-desc" data-en="A speculative web archive and interactive game that critically examines the &quot;quantified intimacy&quot; of modern dating markets. Through absurd gamified mechanics, it challenges the commodification of human relationships under algorithmic matchmaking." data-zh="一个推测性网页档案与交互游戏，批判性地审视了现代相亲市场中的“量化亲密关系”。通过荒诞的游戏化机制，挑战了算法匹配下人类情感的商品化倾向。">A speculative web archive and interactive game that critically examines the "quantified intimacy" of modern dating markets. Through absurd gamified mechanics, it challenges the commodification of human relationships under algorithmic matchmaking.</p>
+                            <a href="project-01.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-01.html" class="media-link">
+                                <img src="assets/cover01.png" alt="MarriagEmArkeT Cover">
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="TEAM OF 3" data-zh="三人团队">TEAM OF 3</span>
+                                <span>/</span>
+                                <span data-en="MOTION CAPTURE & GAME" data-zh="动作捕捉与游戏">MOTION CAPTURE & GAME</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-02.html">/imagine:salmon</a></h2>
+                            <p class="project-desc" data-en="A darkly comedic survival game where players control a piece of salmon sashimi. Utilizing motion capture and glitch aesthetics, it explores bodily alienation and the absurdity of existing as &quot;erroneous data&quot; under the algorithmic gaze." data-zh="一款黑色幽默生存游戏，玩家将控制一块三文鱼刺身。利用动捕技术与故障美学，探讨了在算法凝视下作为“错误数据”存在的身体异化与荒诞感。">A darkly comedic survival game where players control a piece of salmon sashimi. Utilizing motion capture and glitch aesthetics, it explores bodily alienation and the absurdity of existing as "erroneous data" under the algorithmic gaze.</p>
+                            <a href="project-02.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-02.html" class="media-link">
+                                <img src="assets/cover02.png" alt="/imagine:salmon Cover">
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                                <span>/</span>
+                                <span data-en="ONLINE MULTIPLAYER & GESTURE INTERACTION" data-zh="在线多人与手势交互">ONLINE MULTIPLAYER & GESTURE INTERACTION</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-03.html">FragileWE</a></h2>
+                            <p class="project-desc" data-en="An online multiplayer computational artwork exploring the terrifying asymmetry between creation and destruction. Users employ real-time webcam gesture controls (ml5.js) to collaboratively build—and effortlessly destroy—fragile digital dominoes." data-zh="一个在线多人计算艺术作品，探索了创造与毁灭之间令人恐惧的不对称性。用户通过实时网络摄像头手势控制 (ml5.js)，共同构建——并轻易摧毁——脆弱的数字多米诺骨牌。">An online multiplayer computational artwork exploring the terrifying asymmetry between creation and destruction. Users employ real-time webcam gesture controls (ml5.js) to collaboratively build—and effortlessly destroy—fragile digital dominoes.</p>
+                            <a href="project-03.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-03.html" class="media-link">
+                                <img src="assets/cover03.png" alt="FragileWE Cover">
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                                <span>/</span>
+                                <span data-en="WEBCAM-BASED DIGITAL ORACLE" data-zh="基于摄像头的数字神谕">WEBCAM-BASED DIGITAL ORACLE</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-04.html" data-en="Actually I've already decided, But I still want to ask..." data-zh="其实我已经决定了，但我还是想问问...">Actually I've already decided, But I still want to ask...</a></h2>
+                            <p class="project-desc" data-en="An interactive, webcam-based digital oracle that playfully reimagines the &quot;Magic 8-Ball.&quot; Utilizing facial tracking and hand gestures, users summon a 3D angel for guidance, featuring a cathartic &quot;burning&quot; ritual to reject unwanted advice and affirm inner choices." data-zh="一个基于摄像头的交互式数字神谕，戏谑地重构了“魔法8号球”。利用面部追踪与手势，用户可召唤 3D 天使获取指引，并通过一种宣泄式的“燃烧”仪式来拒绝不想要的建议，从而坚定内心的选择。">An interactive, webcam-based digital oracle that playfully reimagines the "Magic 8-Ball." Utilizing facial tracking and hand gestures, users summon a 3D angel for guidance, featuring a cathartic "burning" ritual to reject unwanted advice and affirm inner choices.</p>
+                            <a href="project-04.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-04.html" class="media-link">
+                                <img src="assets/51.png" alt="Digital Oracle Cover">
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span>
+                                <span>/</span>
+                                <span data-en="INTERACTIVE NARRATIVE & DIGITAL MONUMENT" data-zh="交互叙事与数字纪念碑">INTERACTIVE NARRATIVE & DIGITAL MONUMENT</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-06.html" data-en="It's so quiet, I thought we'd always have something to talk about" data-zh="好安静我以为我们永远有话说">It's so quiet, I thought we'd always have something to talk about</a></h2>
+                            <p class="project-desc" data-en="A digital monument and interactive narrative critiquing the &quot;Dead Internet Theory.&quot; It translates the invisible statistics of bot dominance into an inescapable Penrose loop, visualizing the internet's decay into algorithmic &quot;data sludge.&quot;" data-zh="一个批判“死互联网理论”的数字纪念碑与交互叙事。它将机器人主导的不可见数据转化为令人绝望的彭罗斯死循环，将互联网向算法“数据污泥”的衰退过程可视化。">A digital monument and interactive narrative critiquing the "Dead Internet Theory." It translates the invisible statistics of bot dominance into an inescapable Penrose loop, visualizing the internet's decay into algorithmic "data sludge."</p>
+                            <a href="project-06.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-06.html" class="media-link">
+                                <img src="assets/cover05.png" alt="It's quiet Cover">
+                            </a>
+                        </div>
+                    </article>
+
+                </section>
+            </div>
+
+            <div class="category-content" id="brand">
+                <section class="project-list">
+                    
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                                <span>/</span>
+                                <span data-en="BRAND IDENTITY & EVENT VISUALS" data-zh="品牌视觉与快闪设计">BRAND IDENTITY & EVENT VISUALS</span>
+                                <span class="tag-award" data-en="AWARD" data-zh="获奖">AWARD</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-wks.html" data-en="Wukuaishi Community Rebranding" data-zh="五块石社区品牌更新 & 快闪活动视觉">Wukuaishi Community Rebranding</a></h2>
+                            <p class="project-desc" data-en="Platinum Originality International Graphic Design Competition - Excellence Award.<br><br>Detailed project description will be updated soon." data-zh="白金国际设计大赛优秀奖。<br><br>在城市“存量更新”的背景下，本项目旨在为成都五块石社区进行视觉系统改造与品牌重塑。通过利用现有公共空间，寻找“视觉噪音”与“市井烟火气”的平衡点。这是一场集合居民、游客、设计师发掘在地文化的“探险”，旨在打造一个日常、开放、可更新的社区新生态。">Platinum Originality International Graphic Design Competition - Excellence Award.<br><br>Detailed project description will be updated soon.</p>
+                            <a href="project-wks.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-wks.html" class="media-link"><img src="assets/wks.png" alt="Wukuaishi Community"></a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                                <span>/</span>
+                                <span data-en="COMPREHENSIVE DESIGN" data-zh="综合设计">COMPREHENSIVE DESIGN</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-asuwish.html" data-en="AS U WISH" data-zh="AS U WISH 如愿以偿">AS U WISH</a></h2>
+                            <p class="project-desc" data-en="Taking the act of touching as a MacGuffin motif, this project integrates the traditional concept of the 'Five Blessings' and the interaction between humans and traces. It seeks to materialize the psychological comfort that auspicious imagery brings people under sympathetic thinking through tangible graphic design, editorial design, and an interactive installation." data-zh="本项目将触摸行为作为麦加芬母题，结合五福观、人与痕迹的相互关系，试图将交感思维下吉祥物像对人们产生的安慰用可见可感的平面设计、书籍设计、交互装置进行体现。">Taking the act of touching as a MacGuffin motif, this project integrates the traditional concept of the 'Five Blessings' and the interaction between humans and traces. It seeks to materialize the psychological comfort that auspicious imagery brings people under sympathetic thinking through tangible graphic design, editorial design, and an interactive installation.</p>
+                            <a href="project-asuwish.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-asuwish.html" class="media-link"><img src="assets/auw.png" alt="AS U WISH"></a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span>
+                                <span>/</span>
+                                <span data-en="UI/UX & AR & ONLINE INTERACTION" data-zh="UI/UX & AR与在线交互">UI/UX & AR & ONLINE INTERACTION</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-05.html" data-en="Market App" data-zh="玉林综合市场 App">Market App</a></h2>
+                            <p class="project-desc" data-en="A digital-first transformation of a traditional Chengdu food market. By integrating spatial computing, AR food identifiers, and a culturally responsive UI, it bridges the physical and dynamic online worlds for a younger demographic." data-zh="成都玉林传统市场的数字化转型项目。通过整合空间计算、AR 食材识别与文化响应式 UI，为年轻一代搭建了连接物理空间与动态在线世界的桥梁。">A digital-first transformation of a traditional Chengdu food market. By integrating spatial computing, AR food identifiers, and a culturally responsive UI, it bridges the physical and dynamic online worlds for a younger demographic.</p>
+                            <a href="project-05.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-05.html" class="media-link">
+                                <img src="assets/cover04.png" alt="Market App Cover">
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span>
+                                <span>/</span>
+                                <span data-en="VI SYSTEM & MERCHANDISE" data-zh="视觉系统与活动周边">VI SYSTEM & MERCHANDISE</span>
+                                <span class="tag-award" data-en="AWARD" data-zh="获奖">AWARD</span>
+                            </div>
+                            <h2 class="project-title"><a href="project-bwg.html" data-en="REBORN: Sichuan University Museum" data-zh="新生：川大博物馆视觉更新与活动周边">REBORN: Sichuan University Museum</a></h2>
+                            <p class="project-desc" data-en="Bolue Cup Design Competition - Silver Award.<br>Visual identification system and event merchandise design.<br><br>Detailed project description will be updated soon." data-zh="博略杯设计大赛银奖。<br>视觉更新与活动周边设计。<br><br>详细的项目描述将很快更新。">Bolue Cup Design Competition - Silver Award.<br>Visual identification system and event merchandise design.<br><br>Detailed project description will be updated soon.</p>
+                            <a href="project-bwg.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                        </div>
+                        <div class="project-media">
+                            <a href="project-bwg.html" class="media-link"><img src="assets/mus.png" alt="Sichuan University Museum"></a>
+                        </div>
+                    </article>
+
+                </section>
+            </div>
+
+            <section id="info" class="info-section">
+                <h2 class="info-heading" data-en="Info" data-zh="个人简介">Info</h2>
+                <div class="info-content">
+                    <p data-en="Currently studying MA Computational Arts at Goldsmiths." data-zh="目前就读于伦敦大学金史密斯学院，攻读计算艺术硕士学位 (MA Computational Arts)。">Currently studying MA Computational Arts at Goldsmiths.</p>
+                    <p data-en="currently hold a Student Visa and am fully eligible to transition to the Graduate Route visa (PSW) independently upon graduation in Sept 2026, which will grant me full work authorization through 2028 without the need for sponsorship." data-zh="目前持有英国学生签证，并完全有资格在 2026 年 9 月毕业后自主转换为毕业生签证 (PSW)，这将赋予我直到 2028 年的完全工作许可，无需雇主担保。">currently hold a Student Visa and am fully eligible to transition to the Graduate Route visa (PSW) independently upon graduation in Sept 2026, which will grant me full work authorization through 2028 without the need for sponsorship.</p>
+                </div>
+                
+                <ul class="contact-list">
+                    <li>
+                        <span class="contact-label" data-en="Email" data-zh="邮箱">Email</span> 
+                        <a href="mailto:songjiayun6@outlook.com" class="contact-link">songjiayun6@outlook.com</a>
+                    </li>
+                    <li>
+                        <span class="contact-label" data-en="Phone" data-zh="电话">Phone</span> 
+                        <span>+44 7344567111</span>
+                    </li>
+                    <li>
+                        <span class="contact-label" data-en="Illustration Blog" data-zh="插画主页">Illustration Blog</span> 
+                        <a href="https://xhslink.com/m/6oNL1ztmssr" target="_blank" class="contact-link">Pocar1 (in Rednote)</a>
+                    </li>
+                </ul>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="resume-modal" class="resume-modal">
+        <span class="close-modal-btn" onclick="closeResume()">&times;</span>
+        <div class="resume-modal-content" onclick="event.stopPropagation()">
+            <img src="assets/resume-may.png" alt="Jiayun Song Resume">
+        </div>
+    </div>
+
+    <script>
+        // --- 简历弹窗控制逻辑 ---
+        function openResume(e) {
+            e.preventDefault(); // 阻止原本的链接跳转
+            document.getElementById('resume-modal').classList.add('show');
+            document.body.classList.add('modal-open'); // 锁定底层滚动
+        }
+
+        function closeResume() {
+            document.getElementById('resume-modal').classList.remove('show');
+            document.body.classList.remove('modal-open'); // 恢复底层滚动
+        }
+
+        // 点击背景空白处关闭弹窗
+        document.getElementById('resume-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeResume();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            // --- 分类悬停切换逻辑 ---
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const categoryContents = document.querySelectorAll('.category-content');
+
+            filterTabs.forEach(tab => {
+                tab.addEventListener('mouseenter', () => {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    categoryContents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    const targetId = tab.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+            // --------------------------------
+
+            function switchLang(lang) {
+                langCheckbox.checked = (lang === 'zh');
+
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

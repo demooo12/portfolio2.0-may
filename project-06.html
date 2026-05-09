@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>It's so quiet... - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; }
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Section Layout (Standard Single Column Text) */
+        .detail-text-section { margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .section-content { display: flex; flex-direction: column; }
+        .editorial-text { font-size: 1.1rem; color: #333; line-height: 1.5; }
+        .editorial-text p { margin-bottom: 1.5rem; }
+
+        /* 50/50 Side-by-Side Layout for Specific Elements */
+        .side-by-side-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-bottom: 3rem; margin-top: 1rem; }
+        .side-by-side-row .text-block p { font-size: 1.1rem; color: #333; margin-bottom: 0; line-height: 1.4; }
+        .side-by-side-row .image-block img, .side-by-side-row .image-block video { width: 100%; height: auto; display: block; border: none; }
+        
+        /* Media Alignment & Sizing */
+        .inline-image-wrap { margin-top: 1.5rem; text-align: center; margin-bottom: 2.5rem;}
+        .inline-image-wrap.full img, .inline-image-wrap.full video { width: 100%; height: auto; display: block; border: none; }
+        .inline-image-wrap.seventy img, .inline-image-wrap.seventy video { width: 70%; height: auto; display: block; margin: 0 auto; border: none; }
+        .inline-image-wrap.fifty img, .inline-image-wrap.fifty video { width: 50%; height: auto; display: block; margin: 0 auto; border: none; }
+        
+        .media-label { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; color: #555; margin-bottom: 0.5rem; text-align: center; }
+
+        /* Video Wrapper for YouTube Embed */
+        .video-wrapper { margin-bottom: 4rem; }
+        .video-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #111; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* ==================================================== */
+        /* 中英文切换滑块与排版控制 CSS */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            .side-by-side-row { grid-template-columns: 1fr; gap: 1.5rem; }
+            .inline-image-wrap.seventy img, .inline-image-wrap.seventy video, 
+            .inline-image-wrap.fifty img, .inline-image-wrap.fifty video { width: 100%; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="It's so quiet..." data-zh="好安静我以为我们永远有话说">It's so quiet...</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span> 
+                        <span data-en="/ INTERACTIVE NARRATIVE & DIGITAL MONUMENT" data-zh="/ 交互叙事与数字纪念碑">/ INTERACTIVE NARRATIVE & DIGITAL MONUMENT</span>
+                    </div>
+                    <div class="link-group">
+                        <a href="https://youtu.be/6LHGxzQQGeE?si=ULDrngmFVc5otwJb" target="_blank" class="action-btn" data-en="Project Video ->" data-zh="项目视频 ->">Project Video -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="Co-Creator, Concept, 3D Visuals, Unity Dev" data-zh="联合创作者、概念构思、3D视觉、Unity开发">Co-Creator, Concept, 3D Visuals, Unity Dev</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="Unity, Gemini, Blender" data-zh="Unity, Gemini, Blender">Unity, Gemini, Blender</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Interactive Narrative / Digital Monument" data-zh="交互叙事 / 数字纪念碑">Interactive Narrative / Digital Monument</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2025" data-zh="2025">2025</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="inline-image-wrap full" style="margin-top: 0; margin-bottom: 4rem;">
+                <img src="assets/cover05.png" alt="It's so quiet Hero Image">
+            </div>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="The Concept" data-zh="概念构思">The Concept</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="<strong>The Core Theme:</strong> The project is a critical inquiry into the &quot;Dead Internet Theory,&quot; exploring how the web has transitioned from a human-centric public square into a &quot;semantic quagmire&quot; dominated by bots and automated entities." data-zh="<strong>核心主题：</strong>本项目是对“死互联网理论”的批判性探究，探讨了网络如何从以人为中心的公共广场，演变为由机器人和自动化实体主导的“语义泥潭”。"><strong>The Core Theme:</strong> The project is a critical inquiry into the "Dead Internet Theory," exploring how the web has transitioned from a human-centric public square into a "semantic quagmire" dominated by bots and automated entities.</p>
+                        
+                        <p data-en="<strong>Data Poetics:</strong> It translates the invisible, hard statistics of algorithmic control and web traffic into an embodied, visual experience of human alienation." data-zh="<strong>数据诗学：</strong>它将算法控制和网络流量中那些不可见、冰冷的数据，转化为一种具身化、视觉化的人类异化体验。"><strong>Data Poetics:</strong> It translates the invisible, hard statistics of algorithmic control and web traffic into an embodied, visual experience of human alienation.</p>
+                        
+                        <p data-en="<strong>Visualizing Environmental Decay:</strong> Rather than using traditional data charts, the project visualizes the internet's &quot;population shift&quot; as a process of environmental decay across four distinct stages: Gorgeous, Cumbersome, Absurd, and Decline." data-zh="<strong>环境衰退可视化：</strong>项目没有使用传统的数据图表，而是将互联网的“人口结构变迁”可视化为一个经历四个不同阶段（华丽、笨重、荒诞、衰退）的环境衰退过程。"><strong>Visualizing Environmental Decay:</strong> Rather than using traditional data charts, the project visualizes the internet's "population shift" as a process of environmental decay across four distinct stages: Gorgeous, Cumbersome, Absurd, and Decline.</p>
+                    </div>
+                    <div class="inline-image-wrap full">
+                        <video src="assets/45.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Game Mechanics" data-zh="游戏机制">Game Mechanics</div>
+                <div class="section-content">
+                    
+                    <div class="inline-image-wrap fifty" style="margin-top: 0; margin-bottom: 3rem;">
+                        <img src="assets/41.png" alt="Sketch Overview" loading="lazy">
+                    </div>
+
+                    <div class="side-by-side-row">
+                        <div class="text-block">
+                            <p data-en="<strong>The Inescapable Loop:</strong> The core interaction intervenes in the user's agency by constructing a deceptive &quot;no-exit&quot; mechanism." data-zh="<strong>不可逃避的循环：</strong>核心交互通过构建一个具有欺骗性的“无出口”机制，来干预用户的自主权（Agency）。"><strong>The Inescapable Loop:</strong> The core interaction intervenes in the user's agency by constructing a deceptive "no-exit" mechanism.</p>
+                        </div>
+                        <div class="image-block">
+                            <video src="assets/42.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        </div>
+                    </div>
+
+                    <div class="editorial-text">
+                        <p data-en="<strong>Illusion of Progress:</strong> Utilizing the geometric logic of the Penrose stairs, the game features a recurring staircase animation that acts as a deceptive hyperlink—promising progress to the player but only delivering a repetition of the void." data-zh="<strong>进步的幻觉：</strong>利用彭罗斯阶梯的几何逻辑，游戏设计了一个循环的楼梯动画作为欺骗性的超链接——它向玩家承诺了前进的可能，但最终带来的只是虚无的重复。"><strong>Illusion of Progress:</strong> Utilizing the geometric logic of the Penrose stairs, the game features a recurring staircase animation that acts as a deceptive hyperlink—promising progress to the player but only delivering a repetition of the void.</p>
+                    </div>
+                    <div class="inline-image-wrap full" style="margin-top: 1rem; margin-bottom: 3rem;">
+                        <video src="assets/46.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+
+                    <div class="editorial-text">
+                        <p data-en="<strong>Experiencing &quot;Authenticity Collapse&quot;:</strong> This mechanic traps the user not with physical walls, but with the logic of engagement-driven systems, forcing them to physically experience a space where human agency is merely an illusion." data-zh="<strong>体验“真实性崩塌”：</strong>这种机制并非用物理墙壁困住用户，而是用数据驱动系统的逻辑将他们困住，迫使他们切身体验一个“人类自主性仅仅是一种幻觉”的空间。"><strong>Experiencing "Authenticity Collapse":</strong> This mechanic traps the user not with physical walls, but with the logic of engagement-driven systems, forcing them to physically experience a space where human agency is merely an illusion.</p>
+                    </div>
+                    <div class="inline-image-wrap full" style="margin-top: 1rem;">
+                        <img src="assets/43.png" alt="Authenticity Collapse" loading="lazy">
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="detail-text-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="The Execution & AI Integration" data-zh="执行与 AI 融合">The Execution & AI Integration</div>
+                <div class="section-content">
+                    
+                    <div class="side-by-side-row">
+                        <div class="text-block">
+                            <p data-en="<strong>Hybrid Workflow:</strong> The execution relies on a hybrid workflow combining Blender's aesthetics with Unity's programming logic to make the invisible threat of the &quot;Dead Internet&quot; visible." data-zh="<strong>混合工作流：</strong>执行过程依赖于将 Blender 的美学与 Unity 的编程逻辑相结合的混合工作流，使得“死互联网”的无形威胁变得可见。"><strong>Hybrid Workflow:</strong> The execution relies on a hybrid workflow combining Blender's aesthetics with Unity's programming logic to make the invisible threat of the "Dead Internet" visible.</p>
+                        </div>
+                        <div class="image-block">
+                            <img src="assets/44.jpg" alt="Hybrid Workflow" loading="lazy">
+                        </div>
+                    </div>
+
+                    <div class="editorial-text">
+                        <p data-en="<strong>Aesthetics of &quot;Data Sludge&quot;:</strong> Informed by the phenomenon of AI-generated &quot;computational creativity&quot; (like the viral &quot;Shrimp Jesus&quot;), the project designs a surreal, glitch-filled landscape where actual meaning dissolves into &quot;data sludge&quot;. Visual elements, such as black cables representing algorithmic roots, are used to show the choking of vibrant social interfaces." data-zh="<strong>“数据污泥”美学：</strong>受 AI 生成的“计算创造力”现象（如爆火的“虾耶稣”）启发，项目设计了一个超现实的、充满故障艺术的景观，在这里，真实的意义溶解成了“数据污泥”。例如，代表算法根须的黑色电缆等视觉元素，被用来表现充满活力的社交界面是如何被扼杀的。"><strong>Aesthetics of "Data Sludge":</strong> Informed by the phenomenon of AI-generated "computational creativity" (like the viral "Shrimp Jesus"), the project designs a surreal, glitch-filled landscape where actual meaning dissolves into "data sludge". Visual elements, such as black cables representing algorithmic roots, are used to show the choking of vibrant social interfaces.</p>
+                    </div>
+
+                    <div class="inline-image-wrap seventy">
+                        <div class="media-label" data-en="Stage 1: Gorgeous" data-zh="第一阶段：华丽 (Gorgeous)">Stage 1: Gorgeous</div>
+                        <video src="assets/47.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                    <div class="inline-image-wrap seventy">
+                        <div class="media-label" data-en="Stage 2: Cumbersome" data-zh="第二阶段：笨重 (Cumbersome)">Stage 2: Cumbersome</div>
+                        <video src="assets/48.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                    <div class="inline-image-wrap seventy">
+                        <div class="media-label" data-en="Stage 3: Absurd" data-zh="第三阶段：荒诞 (Absurd)">Stage 3: Absurd</div>
+                        <video src="assets/49.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 3rem;">
+                        <div class="media-label" data-en="Stage 4: Decline" data-zh="第四阶段：衰退 (Decline)">Stage 4: Decline</div>
+                        <video src="assets/50.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+
+                    <div class="editorial-text">
+                        <p data-en="<strong>Thematic AI Integration:</strong> While the game critiques AI, its underlying mechanics are heavily informed by academic research on AI behavior. The entrapment logic is theoretically grounded in studies showing that AI agents can be up to six times more persuasive than humans, rendering human subjectivity &quot;operationally irrelevant&quot; within the network." data-zh="<strong>AI 主题融合：</strong>虽然游戏本身在批判 AI，但其底层机制却深受关于 AI 行为的学术研究启发。这种困境逻辑在理论上基于这样一项研究：AI 智能体的说服力可能高达人类的六倍，这使得人类的主体性在网络中变得“在操作层面上无关紧要”。"><strong>Thematic AI Integration:</strong> While the game critiques AI, its underlying mechanics are heavily informed by academic research on AI behavior. The entrapment logic is theoretically grounded in studies showing that AI agents can be up to six times more persuasive than humans, rendering human subjectivity "operationally irrelevant" within the network.</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <div style="border-bottom: 1px solid #111; margin-bottom: 4rem;"></div>
+
+            <section class="video-wrapper">
+                <div class="video-heading" data-en="Project Video" data-zh="项目视频">Project Video</div>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/6LHGxzQQGeE" title="It's so quiet Project Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                langCheckbox.checked = (lang === 'zh');
+
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 使用 innerHTML 保护内部的 <strong> 等 HTML 标签
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化：读取本地缓存同步语言状态
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

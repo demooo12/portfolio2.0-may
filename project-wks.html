@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wukuaishi Community Rebranding - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+        
+        /* 特殊奖项标签样式 */
+        .award-btn {
+            border-color: #b8860b; 
+            color: #b8860b; 
+            pointer-events: none; /* 仅作为标签展示，不可点击 */
+        }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; }
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Editorial Text Section */
+        .detail-text-section { margin-bottom: 2rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem; }
+        .editorial-text { font-size: 1.1rem; color: #333; line-height: 1.5; }
+        .editorial-text p { margin-bottom: 1.5rem; }
+
+        /* ==================================================== */
+        /* PDF 专属展示容器 */
+        /* ==================================================== */
+        .pdf-wrapper {
+            width: 100%;
+            height: 85vh; /* 占据屏幕 85% 的高度 */
+            border: 1px solid #111;
+            margin-bottom: 4rem;
+            background-color: #e9e9e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pdf-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 中英文切换滑块和中文排版专用的 CSS */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        /* 中文模式下，导航按钮从上到下正向排列 */
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            
+            /* 手机端 PDF 高度自适应缩减 */
+            .pdf-wrapper { height: 65vh; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="Wukuaishi Community Rebranding" data-zh="五块石社区品牌更新 & 快闪活动视觉">Wukuaishi Community Rebranding</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="SOLO PROJECT" data-zh="个人项目">SOLO PROJECT</span> 
+                        <span data-en="/ BRAND IDENTITY & EVENT VISUALS" data-zh="/ 品牌视觉与快闪设计">/ BRAND IDENTITY & EVENT VISUALS</span>
+                    </div>
+                    
+                    <div class="link-group">
+                        <span class="action-btn award-btn" data-en="🏆 Platinum Originality Award" data-zh="🏆 白金国际设计大赛优秀奖">🏆 Platinum Originality Award</span>
+                        <a href="assets/wks.pdf" target="_blank" class="action-btn" data-en="Open PDF in New Tab ->" data-zh="在新标签页打开 PDF ->">Open PDF in New Tab -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="Visual Identity, Event Design" data-zh="品牌视觉识别、快闪活动视觉">Visual Identity, Event Design</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="Illustrator, Photoshop" data-zh="Illustrator, Photoshop">Illustrator, Photoshop</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Brand Identity System" data-zh="品牌视觉系统">Brand Identity System</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2023" data-zh="2023">2024</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Project Overview" data-zh="项目概览">Project Overview</div>
+                <div class="editorial-text">
+                    <p data-en="This project focuses on the rebranding and pop-up event visual design for the Wukuaishi Community. It was awarded the Excellence Award in the Platinum Originality International Graphic Design Competition. The full presentation deck is embedded below." data-zh="本项目专注于五块石社区的品牌更新以及快闪活动的视觉设计。该项目荣获白金国际设计大赛优秀奖。完整的项目展示文档请参阅下方 PDF。">This project focuses on the rebranding and pop-up event visual design for the Wukuaishi Community. It was awarded the Excellence Award in the Platinum Originality International Graphic Design Competition. The full presentation deck is embedded below.</p>
+                </div>
+            </section>
+
+            <section class="pdf-wrapper">
+                <iframe src="assets/wks.pdf#view=FitH" title="Wukuaishi Community Rebranding Presentation">
+                    <p data-en="Your browser does not support PDFs. Please use the button above to download." data-zh="您的浏览器不支持直接预览 PDF，请点击上方的按钮下载查看。">Your browser does not support PDFs. Please use the button above to download.</p>
+                </iframe>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                // 1. 切换 Checkbox 状态
+                langCheckbox.checked = (lang === 'zh');
+
+                // 2. 切换 Body Class
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 3. 替换内容
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

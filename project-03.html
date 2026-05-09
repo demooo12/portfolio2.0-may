@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FragileWE - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; }
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Hero Media */
+        .hero-media { width: 100%; aspect-ratio: 16/9; background-color: transparent; margin-bottom: 4rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hero-media img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Editorial Text Section */
+        .detail-text-section { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; }
+        
+        /* 文章内容包裹器 */
+        .section-content { display: flex; flex-direction: column; }
+        .editorial-text { column-count: 2; column-gap: 2rem; font-size: 1.1rem; color: #333; }
+        .editorial-text p { margin-bottom: 1.5rem; break-inside: avoid; }
+        
+        /* Video Wrapper */
+        .video-wrapper { margin-bottom: 4rem; }
+        .video-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #111; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Narrative Gallery */
+        .narrative-gallery { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem; }
+        .gallery-text { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; color: #111; margin-top: 2rem; margin-bottom: 0.5rem; border-bottom: 1px solid #111; padding-bottom: 0.5rem; }
+        .gallery-item { width: 100%; background-color: transparent; display: flex; align-items: center; justify-content: center; }
+        .gallery-item img { width: 100%; height: auto; object-fit: contain; border: 1px solid #ddd; }
+        .gallery-item.full-width { grid-column: span 2; }
+
+        /* ==================================================== */
+        /* 中英文切换滑块与排版控制 CSS */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            .detail-text-section { grid-template-columns: 1fr; gap: 1rem; }
+            .editorial-text { column-count: 1; }
+            /* 移动端恢复图片宽度 */
+            .gallery-item img[style*="width: 70%"] { width: 100% !important; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="FragileWE" data-zh="FragileWE">FragileWE</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="SOLO PROJECT" data-zh="个人项目">SOLO PROJECT</span> 
+                        <span data-en="/ ONLINE MULTIPLAYER & GESTURE INTERACTION" data-zh="/ 在线多人与手势交互">/ ONLINE MULTIPLAYER & GESTURE INTERACTION</span>
+                    </div>
+                    <div class="link-group">
+                        <a href="https://fragilewe-2-0.onrender.com" target="_blank" class="action-btn" data-en="Playtest Link ->" data-zh="测试链接 ->">Playtest Link -></a>
+                        <a href="https://youtu.be/Crh9d_EI_ME" target="_blank" class="action-btn" data-en="Project Video ->" data-zh="项目视频 ->">Project Video -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="Concept to Execution" data-zh="概念构思至落地执行">Concept to Execution</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="p5.js, ml5.js, Gemini, Illustrator" data-zh="p5.js, ml5.js, Gemini, Illustrator">p5.js, ml5.js, Gemini, Illustrator</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Interactive & Multiplayer Artwork" data-zh="交互式多人在线艺术作品">Interactive & Multiplayer Artwork</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2026" data-zh="2026">2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="hero-media">
+                <img src="assets/24.png" alt="FragileWE Hero">
+            </section>
+
+            <section class="detail-text-section" style="margin-bottom: 2rem; border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="Concept" data-zh="概念构思">Concept</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="&quot;FragileWE 2.0&quot; is an interactive, multiplayer computational artwork exploring the terrifying asymmetry between the immense effort required to build and the ease of destruction. In this shared online space, anonymous users collaboratively place digital dominoes. These dominoes act as fragile &quot;collective assets&quot; and social contracts—taking minutes of careful collaboration to construct, but only seconds to collapse entirely in a chain reaction." data-zh="“FragileWE 2.0”是一个交互式、多人在线的计算艺术作品，探索了构建所需的巨大努力与轻易毁灭之间令人恐惧的不对称性。在这个共享的在线空间中，匿名用户共同放置数字多米诺骨牌。这些多米诺骨牌充当脆弱的“集体资产”与社会契约——需要数分钟的小心协作来构建，但在连锁反应中只需几秒钟便会完全崩塌。">"FragileWE 2.0" is an interactive, multiplayer computational artwork exploring the terrifying asymmetry between the immense effort required to build and the ease of destruction. In this shared online space, anonymous users collaboratively place digital dominoes. These dominoes act as fragile "collective assets" and social contracts—taking minutes of careful collaboration to construct, but only seconds to collapse entirely in a chain reaction.</p>
+                        
+                        <p data-en="Inspired by Olafur Eliasson’s physical installations, this project translates the concept of collective building into the digital realm. By algorithmically amplifying the stark contrast between creation and destruction, it illustrates human vulnerability against cold computational logic." data-zh="受奥拉维尔·埃利亚松 (Olafur Eliasson) 实体装置的启发，本项目将集体构建的概念转化为数字领域。通过算法放大创造与毁灭之间的强烈对比，它揭示了人类在冷酷的计算逻辑面前的脆弱性。">Inspired by Olafur Eliasson’s physical installations, this project translates the concept of collective building into the digital realm. By algorithmically amplifying the stark contrast between creation and destruction, it illustrates human vulnerability against cold computational logic.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="narrative-gallery" style="margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem;">
+                <div class="gallery-item full-width">
+                    <img src="assets/28.png" alt="User Interaction Flow" loading="lazy">
+                </div>
+            </section>
+
+            <section class="detail-text-section" style="margin-bottom: 2rem; border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="Interaction Mechanics" data-zh="交互机制">Interaction Mechanics</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="<strong>The Shift to Embodied Interaction:</strong> Playtesting revealed that traditional mouse clicks lacked the physical weight needed to convey the artistic metaphor of &quot;fragility&quot;. To resolve this, I introduced computer vision via ml5.js (HandPose) to physically embody the interaction." data-zh="<strong>转向具身交互：</strong>游戏测试表明，传统的鼠标点击缺乏传达“脆弱”这一艺术隐喻所需的物理重量感。为了解决这个问题，我通过 ml5.js (HandPose) 引入了计算机视觉，赋予交互以物理具身性。"><strong>The Shift to Embodied Interaction:</strong> Playtesting revealed that traditional mouse clicks lacked the physical weight needed to convey the artistic metaphor of "fragility". To resolve this, I introduced computer vision via ml5.js (HandPose) to physically embody the interaction.</p>
+                        
+                        <p data-en="<strong>The Mechanic (The Build-up vs. Destruction):</strong> The interaction flow is an asymmetrical physical experience. To create, users must carefully navigate using an open left hand, and meticulously &quot;pinch and rotate&quot; with their right hand to place a domino, demanding physical tension and steadiness. Conversely, destruction is effortlessly brutal: a rapid, open-hand swipe registers as a physical strike, instantly triggering a catastrophic chain reaction that wipes out the collaborative effort." data-zh="<strong>机制（构建与毁灭）：</strong>交互流程是一种非对称的物理体验。为了创造，用户必须使用张开的左手小心导航，并用右手极其精细地“捏合与旋转”来放置骨牌，这要求身体的紧绷与稳定。相反，毁灭则是毫不费力且残酷的：一次快速的张手挥击即可被识别为物理击打，瞬间触发灾难性的连锁反应，将共同努力的成果抹平。"><strong>The Mechanic (The Build-up vs. Destruction):</strong> The interaction flow is an asymmetrical physical experience. To create, users must carefully navigate using an open left hand, and meticulously "pinch and rotate" with their right hand to place a domino, demanding physical tension and steadiness. Conversely, destruction is effortlessly brutal: a rapid, open-hand swipe registers as a physical strike, instantly triggering a catastrophic chain reaction that wipes out the collaborative effort.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="narrative-gallery" style="margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem;">
+                <div class="gallery-item full-width">
+                    <img src="assets/25.png" alt="Interaction Diagram" loading="lazy" style="width: 70%;">
+                </div>
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Execution & AI" data-zh="执行与 AI 融合">Execution & AI</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="Developing 'FragileWE' required bridging frontend 3D rendering (p5.js), machine learning models (ml5.js), and backend real-time networking (Node.js/Socket.io) to synchronize the 'collective assets' across multiple anonymous clients." data-zh="开发《FragileWE》需要连接前端 3D 渲染 (p5.js)、机器学习模型 (ml5.js) 以及后端实时网络通信 (Node.js/Socket.io)，以在多个匿名客户端之间同步“集体资产”。">Developing 'FragileWE' required bridging frontend 3D rendering (p5.js), machine learning models (ml5.js), and backend real-time networking (Node.js/Socket.io) to synchronize the 'collective assets' across multiple anonymous clients.</p>
+                        
+                        <p data-en="In this process, I utilized Gemini as a crucial mathematical and syntax co-pilot. While the conceptual design and architecture remained my own, AI assisted in solving complex 3D coordinate projection algebra to map 2D hand-tracking data into a tilted WebGL space. Furthermore, AI was instrumental in formulating logical gates to accurately parse human intent—distinguishing between a delicate 'pinch' for placement and computing frame-by-frame velocity to accurately trigger the 'swipe' of destruction." data-zh="在这个过程中，我将 Gemini 用作关键的数学与语法辅助工具。虽然概念设计和架构由我自己主导，但 AI 协助解决了复杂的 3D 坐标投影代数问题，将 2D 手部追踪数据映射到倾斜的 WebGL 空间中。此外，AI 在构建逻辑门以准确解析人类意图方面发挥了重要作用——例如区分用于放置的精细“捏合”动作，以及计算逐帧速度以精准触发用于毁灭的“挥击”动作。">In this process, I utilized Gemini as a crucial mathematical and syntax co-pilot. While the conceptual design and architecture remained my own, AI assisted in solving complex 3D coordinate projection algebra to map 2D hand-tracking data into a tilted WebGL space. Furthermore, AI was instrumental in formulating logical gates to accurately parse human intent—distinguishing between a delicate 'pinch' for placement and computing frame-by-frame velocity to accurately trigger the 'swipe' of destruction.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="video-wrapper">
+                <div class="video-heading" data-en="Project Video" data-zh="项目视频">Project Video</div>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/Crh9d_EI_ME" title="FragileWE Project Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </section>
+
+            <section class="narrative-gallery">
+                <div class="section-heading" style="margin-bottom: 1rem;" data-en="Process & Gallery" data-zh="创作过程与画廊">Process & Gallery</div>
+                
+                <div class="gallery-text" data-en="Left & Right Hand Operation" data-zh="左右手操作演示">Left & Right Hand Operation</div>
+                <div class="gallery-item full-width">
+                    <img src="assets/26.gif" alt="Hand Operation Gesture Interaction" loading="lazy">
+                </div>
+
+                <div class="gallery-text" data-en="Multiplayer Online Collaboration" data-zh="多人在线协作">Multiplayer Online Collaboration</div>
+                <div class="gallery-item full-width">
+                    <img src="assets/27.png" alt="Multiplayer Online Simultaneously" loading="lazy">
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                langCheckbox.checked = (lang === 'zh');
+
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 替换内容，innerHTML 保护加粗等标签
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化：读取本地缓存同步语言状态
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

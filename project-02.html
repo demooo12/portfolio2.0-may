@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/imagine:salmon - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; }
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Hero Media */
+        .hero-media { width: 100%; aspect-ratio: 16/9; background-color: transparent; margin-bottom: 4rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* 顶部首图不加懒加载，保证一打开页面就能立刻看到 */
+        .hero-media img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Editorial Text Section */
+        .detail-text-section { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; }
+        
+        /* 文章内容包裹器 */
+        .section-content { display: flex; flex-direction: column; }
+        .editorial-text { column-count: 2; column-gap: 2rem; font-size: 1.1rem; color: #333; }
+        .editorial-text p { margin-bottom: 1.5rem; break-inside: avoid; }
+        
+        /* 内嵌图片的排版控制 */
+        .inline-image-wrap { margin-top: 2rem; text-align: center; }
+        .inline-image-wrap.small img, .inline-image-wrap.small video { max-width: 70%; height: auto; border: 1px solid #ddd; margin: 0 auto; display: block; }
+        .inline-image-wrap.full img, .inline-image-wrap.full video { width: 100%; height: auto; border: 1px solid #ddd; display: block; }
+
+        /* Video Wrapper */
+        .video-wrapper { margin-bottom: 4rem; }
+        .video-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #111; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Narrative Gallery */
+        .narrative-gallery { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem; }
+        .gallery-text { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; color: #111; margin-top: 2rem; margin-bottom: 0.5rem; border-bottom: 1px solid #111; padding-bottom: 0.5rem; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        .gallery-item { width: 100%; background-color: transparent; display: flex; align-items: center; justify-content: center; }
+        .gallery-item img, .gallery-item video { width: 100%; height: auto; object-fit: contain; border: 1px solid #ddd; }
+        .gallery-item.full-width { grid-column: span 2; }
+
+        /* ==================================================== */
+        /* 新增的语言切换滑块和中文排版专用的 CSS */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        /* 中文模式下，导航按钮从上到下正向排列 */
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            .detail-text-section { grid-template-columns: 1fr; gap: 1rem; }
+            .editorial-text { column-count: 1; }
+            .inline-image-wrap.small img, .inline-image-wrap.small video { max-width: 100%; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.full-width { grid-column: span 1; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title">/imagine:salmon</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="TEAM OF 3" data-zh="三人团队">TEAM OF 3</span> 
+                        <span data-en="/ MOTION CAPTURE & GAME" data-zh="/ 动作捕捉与游戏">/ MOTION CAPTURE & GAME</span>
+                    </div>
+                    <div class="link-group">
+                        <a href="https://vimeo.com/1177660482" target="_blank" class="action-btn" data-en="Project Video ->" data-zh="项目视频 ->">Project Video -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="Concept, Interaction, Visuals, Mocap" data-zh="概念构思、交互、视觉与动捕">Concept, Interaction, Visuals, Mocap</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="Unity, OptiTrack, Gemini, Blender" data-zh="Unity, OptiTrack, Gemini, Blender">Unity, OptiTrack, Gemini, Blender</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Narrative Game" data-zh="叙事游戏">Narrative Game</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2026" data-zh="2026">2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="hero-media">
+                <img src="assets/15.png" alt="/imagine:salmon Hero">
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Concept" data-zh="概念构思">Concept</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="Inspired by the viral AI-generated meme depicting raw salmon sashimi—rather than live fish—swimming upstream, this project is built upon an absurd and darkly comedic Speculative Design framework. In this piece, the player's digital avatar is not a traditional humanoid, but a slice of salmon sashimi." data-zh="受网络上疯传的“三文鱼刺身（而非活鱼）逆流而上”AI 生成梗图启发，本项目构建于一个荒诞且具有黑色幽默色彩的推测设计（Speculative Design）框架之上。在这个作品中，玩家的数字虚拟形象不再是传统的人形，而是一块三文鱼刺身。">Inspired by the viral AI-generated meme depicting raw salmon sashimi—rather than live fish—swimming upstream, this project is built upon an absurd and darkly comedic Speculative Design framework. In this piece, the player's digital avatar is not a traditional humanoid, but a slice of salmon sashimi.</p>
+                        
+                        <img src="assets/01.png" alt="Concept Illustration" style="width: 100%; height: auto; display: block; margin-bottom: 1.5rem; border: 1px solid #ddd;" loading="lazy">
+
+                        <p data-en="This sashimi acts as a poignant metaphor for the individual's condition under the algorithmic gaze and hyper-consumerism—a piece of &quot;digital flesh&quot; plated and waiting to be selected and consumed. The project deliberately explores the aesthetics of &quot;erroneous data&quot;: the salmon is essentially an awakened cluster of erroneous AI data possessing a survival instinct. It exhibits human-like struggling dynamics while trapped in the physical shell of food. This serves not only as an absurd metaphor for Bodily Autonomy, but also as a sharp interrogation of the boundaries between subjectivity and objectification in a techno-centric society." data-zh="这块刺身是对算法凝视与过度消费主义下个体处境的深刻隐喻——一块被摆在盘中、等待被挑选和消费的“数字肉块”。本项目刻意探索了“错误数据”的美学：这块三文鱼本质上是一团觉醒并拥有求生本能的错误 AI 数据。它被困在食物的物理外壳中，却展现出类似人类挣扎的动态。这不仅是对身体自主权（Bodily Autonomy）的荒诞隐喻，更是对技术中心社会下主体性与客体化边界的尖锐质询。">This sashimi acts as a poignant metaphor for the individual's condition under the algorithmic gaze and hyper-consumerism—a piece of "digital flesh" plated and waiting to be selected and consumed. The project deliberately explores the aesthetics of "erroneous data": the salmon is essentially an awakened cluster of erroneous AI data possessing a survival instinct. It exhibits human-like struggling dynamics while trapped in the physical shell of food. This serves not only as an absurd metaphor for Bodily Autonomy, but also as a sharp interrogation of the boundaries between subjectivity and objectification in a techno-centric society.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Mechanics" data-zh="核心机制">Mechanics</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="The game mechanics center on an asymmetrical survival experience driven by fatalism. The player controls the sashimi, dodging a pair of giant, procedurally animated chopsticks powered by pseudo-random targeting algorithms." data-zh="游戏机制围绕由宿命论驱动的非对称生存体验展开。玩家控制这块刺身，躲避一双由伪随机瞄准算法驱动、通过程序化动画生成的巨大筷子。">The game mechanics center on an asymmetrical survival experience driven by fatalism. The player controls the sashimi, dodging a pair of giant, procedurally animated chopsticks powered by pseudo-random targeting algorithms.</p>
+                        
+                        <p data-en="Upon losing, the game triggers a cinematic &quot;execution&quot; sequence where the chopsticks deliver the sashimi directly into a child's mouth via a calculated parabolic trajectory. This mechanic of &quot;struggling to survive only to be inevitably consumed&quot; perfectly echoes the project's absurd and predetermined nature." data-zh="一旦失败，游戏将触发一段电影般的“处决”序列：筷子通过计算好的抛物线轨迹，将刺身直接送入一个女孩的口中。这种“努力求生却注定被吞噬”的机制，完美呼应了该项目荒诞且预定的宿命色彩。">Upon losing, the game triggers a cinematic "execution" sequence where the chopsticks deliver the sashimi directly into a child's mouth via a calculated parabolic trajectory. This mechanic of "struggling to survive only to be inevitably consumed" perfectly echoes the project's absurd and predetermined nature.</p>
+                    </div>
+                    <div class="inline-image-wrap full">
+                        <video src="assets/交互示意图.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-text-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="Execution & AI" data-zh="执行与 AI 融合">Execution & AI</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="Technically, I utilized AI flexibly as both a programming co-pilot and an artistic medium. Beyond rapidly prototyping surreal 3D assets—which I then manually restructured to fix topology and pivot offsets for the Unity physics engine—I used Gemini to choreograph complex underlying scripts, such as the sine-wave parabolic algorithms and dynamic bone constraints for the final cinematic." data-zh="在技术层面，我灵活地将 AI 作为编程辅助工具与艺术媒介。除了快速原型化超现实的 3D 资产（随后我手动重构以修复其拓扑结构和轴心偏移，以适应 Unity 物理引擎）之外，我使用 Gemini 编写了复杂的底层脚本，例如用于最终过场动画的正弦波抛物线算法和动态骨骼约束。">Technically, I utilized AI flexibly as both a programming co-pilot and an artistic medium. Beyond rapidly prototyping surreal 3D assets—which I then manually restructured to fix topology and pivot offsets for the Unity physics engine—I used Gemini to choreograph complex underlying scripts, such as the sine-wave parabolic algorithms and dynamic bone constraints for the final cinematic.</p>
+                        
+                        <p data-en="Furthermore, during the OptiTrack motion capture retargeting process, I intentionally retained data jitters and glitches; rather than technical flaws, these &quot;AI recognition errors&quot; were repurposed as a unique glitch aesthetic, manifesting the physical spasms of erroneous data struggling within the digital void." data-zh="此外，在 OptiTrack 动作捕捉重定向过程中，我刻意保留了数据的抖动与毛刺；这些“AI 识别错误”并未被视作技术缺陷，而是被转化为一种独特的故障美学，表现出错误数据在数字虚无中挣扎时的物理痉挛。">Furthermore, during the OptiTrack motion capture retargeting process, I intentionally retained data jitters and glitches; rather than technical flaws, these "AI recognition errors" were repurposed as a unique glitch aesthetic, manifesting the physical spasms of erroneous data struggling within the digital void.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="narrative-gallery" style="margin-top: 4rem;">
+                <div class="section-heading" style="margin-bottom: 1rem;" data-en="Process & Gallery" data-zh="创作过程与画廊">Process & Gallery</div>
+                
+                <div class="gallery-text" data-en="Storyboard" data-zh="故事板">Storyboard</div>
+                <div class="gallery-item full-width">
+                    <img src="assets/13.png" alt="Storyboard" style="max-width: 70%; margin: 0 auto; display: block;" loading="lazy">
+                </div>
+
+                <div class="gallery-text" data-en="Character Design & Motion Capture" data-zh="角色设计与动作捕捉">Character Design & Motion Capture</div>
+                <div class="gallery-item full-width">
+                    <img src="assets/18.png" alt="Character Design" loading="lazy">
+                </div>
+                
+                <div class="gallery-item full-width">
+                    <video src="assets/mocap.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                </div>
+                <div class="gallery-item full-width">
+                    <video src="assets/骨架.mov" autoplay loop muted playsinline loading="lazy"></video>
+                </div>
+
+                <div class="gallery-text" data-en="Gameplay Dynamics & Cinematics" data-zh="游戏动态与过场动画">Gameplay Dynamics & Cinematics</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="assets/16.gif" alt="Entrance Animation" loading="lazy"></div>
+                    <div class="gallery-item"><img src="assets/17.gif" alt="Struggle Animation" loading="lazy"></div>
+                    
+                    <div class="gallery-item"><img src="assets/20.gif" alt="Flesh Transformation" loading="lazy"></div>
+                    <div class="gallery-item"><img src="assets/21.gif" alt="Girl Entrance Animation" loading="lazy"></div>
+                    
+                    <div class="gallery-item"><img src="assets/22.gif" alt="Eating Animation" loading="lazy"></div>
+                    <div class="gallery-item"><img src="assets/23.gif" alt="Final Sequence" loading="lazy"></div>
+                </div>
+            </section>
+
+            <div style="border-bottom: 1px solid #111; margin-bottom: 4rem;"></div>
+
+            <section class="video-wrapper">
+                <div class="video-heading" data-en="Project Video" data-zh="项目视频">Project Video</div>
+                <div class="video-container">
+                    <iframe src="https://player.vimeo.com/video/1177660482?title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                // 1. 切换 Checkbox 状态
+                langCheckbox.checked = (lang === 'zh');
+
+                // 2. 切换 Body Class (控制左侧导航条在中文时的正向排版)
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 3. 替换内容，这里使用 innerHTML 保护内部的换行与粗体标签不失效
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化：每次进网页先读取 localStorage 里的记忆
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market App - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; }
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Section Layout */
+        .detail-text-section { margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .section-content { display: flex; flex-direction: column; }
+        .editorial-text { font-size: 1.1rem; color: #333; line-height: 1.5; column-count: 1; }
+        .editorial-text p { margin-bottom: 1.5rem; }
+
+        /* side-by-side Layout */
+        .side-by-side-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-bottom: 4rem; }
+        .side-by-side-row.ratio-3-7 { grid-template-columns: 0.3fr 0.7fr; }
+        .side-by-side-row .text-block p { font-size: 1.1rem; color: #333; margin-bottom: 0; line-height: 1.4; }
+        .side-by-side-row .image-block img { width: 100%; height: auto; display: block; }
+        .side-by-side-row .image-block.sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        
+        /* Image Control */
+        .inline-image-wrap { margin-top: 1rem; text-align: center; margin-bottom: 2rem;}
+        .inline-image-wrap.full img { width: 100%; height: auto; display: block; }
+        .inline-image-wrap.seventy img { width: 70%; height: auto; display: block; margin: 0 auto; }
+
+        /* Video Wrapper */
+        .video-wrapper { margin-bottom: 4rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #111; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Gallery/Grid */
+        .narrative-gallery { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem; }
+        .gallery-text { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; color: #111; margin-top: 2rem; margin-bottom: 0.5rem; border-bottom: 1px solid #111; padding-bottom: 0.5rem; }
+        .gallery-text.no-border-bottom { border-bottom: none; padding-bottom: 0; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 2rem; }
+        .gallery-item { width: 100%; display: flex; align-items: center; justify-content: center; }
+        .gallery-item img { width: 100%; height: auto; object-fit: contain; }
+        .gallery-item.full-width { grid-column: span 2; }
+
+        /* ==================================================== */
+        /* 中英文切换滑块与排版控制 CSS */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .side-by-side-row, .side-by-side-row.ratio-3-7 { grid-template-columns: 1fr; gap: 1.5rem; }
+            .side-by-side-row .image-block.sub-grid { grid-template-columns: 1fr; } 
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.full-width { grid-column: span 1; }
+            .inline-image-wrap.seventy img { width: 100%; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="Market App" data-zh="玉林综合市场 App">Market App</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag" style="margin-bottom: 0;">
+                        <span class="highlight" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span> 
+                        <span data-en="/ UI/UX & AR INTERACTIVE EXPERIENCE" data-zh="/ UI/UX & AR 交互体验">/ UI/UX & AR INTERACTIVE EXPERIENCE</span>
+                    </div>
+                    <div class="link-group">
+                        <a href="https://youtu.be/htHzM4u4O18" target="_blank" class="action-btn" data-en="Project Video ->" data-zh="项目视频 ->">Project Video -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="UI/UX, AR Prototyping, Brand Visuals" data-zh="UI/UX, AR 原型设计, 品牌视觉">UI/UX, AR Prototyping, Brand Visuals</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="Figma, Adobe Illustrator, Spline" data-zh="Figma, Adobe Illustrator, Spline">Figma, Adobe Illustrator, Spline</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Mobile App & AR Experience" data-zh="移动端 App 与 AR 体验">Mobile App & AR Experience</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2024" data-zh="2024">2024</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="video-wrapper">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/htHzM4u4O18" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <section class="detail-text-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="Concept & Vision" data-zh="概念与愿景">Concept & Vision</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="<strong>The Concept:</strong> The Yulin General Market is a traditional food market in Chengdu that, despite being deeply tied to the community, has remained static for 20 years and struggled to engage the growing younger demographic." data-zh="<strong>项目概念：</strong>玉林综合市场是成都的一个传统菜市场，尽管与社区联系紧密，但20年来一直处于静态发展中，难以吸引不断增长的年轻消费群体。"><strong>The Concept:</strong> The Yulin General Market is a traditional food market in Chengdu that, despite being deeply tied to the community, has remained static for 20 years and struggled to engage the growing younger demographic.</p>
+                        
+                        <p data-en="<strong>The Vision:</strong> This project aims to reshape the market from a single, outdated functional space into a culturally complex living scenario. It strikes a balance between heritage and innovation by preserving local traditions—such as the unique rhythms of the Chengdu dialect—while introducing a modernized, digital-first shopping experience tailored for today's youth." data-zh="<strong>项目愿景：</strong>该项目旨在将市场从单一、过时的功能空间重塑为具有文化复合性的生活场景。它在传承与创新之间取得了平衡，在保留当地传统（如成都方言独特的节奏感）的同时，为当今年轻人引入了现代化的、数字优先的购物体验。"><strong>The Vision:</strong> This project aims to reshape the market from a single, outdated functional space into a culturally complex living scenario. It strikes a balance between heritage and innovation by preserving local traditions—such as the unique rhythms of the Chengdu dialect—while introducing a modernized, digital-first shopping experience tailored for today's youth.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-text-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="Interaction Mechanics" data-zh="交互机制">Interaction Mechanics</div>
+                <div class="section-content">
+                    <div class="side-by-side-row" style="margin-bottom: 4rem;">
+                        <div class="text-block">
+                            <p data-en="<strong>Online + Offline Synergy:</strong> The core mechanic bridges the visual, dynamic online world with the static, physical geography of the shop." data-zh="<strong>线上线下协同：</strong>核心机制将视觉化、动态的在线世界与店铺静态的物理地理环境连接起来。"><strong>Online + Offline Synergy:</strong> The core mechanic bridges the visual, dynamic online world with the static, physical geography of the shop.</p>
+                        </div>
+                        <div class="image-block"><img src="assets/30.png" loading="lazy"></div>
+                    </div>
+
+                    <div class="side-by-side-row">
+                        <div class="text-block">
+                            <p data-en="<strong>Cultural UI Design:</strong> The interface design itself acts as a cultural mechanic, featuring a custom font system (&quot;Afronaut Regular&quot; and Chinese Gothic) that scales dynamically according to local dialectal features." data-zh="<strong>文化响应式 UI 设计：</strong>界面设计本身就是一种文化机制，其定制的字体系统（“Afronaut Regular”和中文字体黑体）能够根据当地方言的特征进行动态缩放。"><strong>Cultural UI Design:</strong> The interface design itself acts as a cultural mechanic, featuring a custom font system ("Afronaut Regular" and Chinese Gothic) that scales dynamically according to local dialectal features.</p>
+                        </div>
+                        <div class="image-block"><img src="assets/31.png" loading="lazy"></div>
+                    </div>
+                    <div class="inline-image-wrap full" style="margin-bottom: 4rem;"><img src="assets/37.png" loading="lazy"></div>
+
+                    <div class="side-by-side-row ratio-3-7">
+                        <div class="text-block">
+                            <p data-en="<strong>Interactive Navigation:</strong> Users navigate the physical space through an Interactive Map built with 3D models, providing stall guidance, event alerts, and direct in-app shopping." data-zh="<strong>交互式导航：</strong>用户通过 3D 模型构建的交互式地图在物理空间中导航，提供摊位指引、活动提醒以及应用内直接购物功能。"><strong>Interactive Navigation:</strong> Users navigate the physical space through an Interactive Map built with 3D models, providing stall guidance, event alerts, and direct in-app shopping.</p>
+                        </div>
+                        <div class="image-block"><img src="assets/32.png" loading="lazy"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div style="border-bottom: 1px solid #111; margin-bottom: 4rem;"></div>
+
+            <section class="detail-text-section" style="border-bottom: none; padding-bottom: 0;">
+                <div class="section-heading" data-en="Execution & Integration" data-zh="执行与整合">Execution & Integration</div>
+                <div class="section-content">
+                    <div class="editorial-text">
+                        <p data-en="<strong>General Content:</strong> Including daily activities, digital recipes, and real-time navigation components." data-zh="<strong>常规内容：</strong>包括日常活动、数字食谱以及实时导航组件。"><strong>General Content:</strong> Including daily activities, digital recipes, and real-time navigation components.</p>
+                    </div>
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><img src="assets/39.gif" loading="lazy"></div>
+
+                    <div class="side-by-side-row ratio-3-7" style="margin-bottom: 4rem;">
+                        <div class="text-block">
+                            <p data-en="<strong>Spatial Computing & AR:</strong> To execute this offline-to-online transformation, the project heavily utilizes Augmented Reality (AR) to enhance the physical shopping experience." data-zh="<strong>空间计算与 AR：</strong>为了实现这种从线下到线上的转变，该项目大量利用增强现实 (AR) 技术来提升物理购物体验。"><strong>Spatial Computing & AR:</strong> To execute this offline-to-online transformation, the project heavily utilizes Augmented Reality (AR) to enhance the physical shopping experience.</p>
+                        </div>
+                        <div class="image-block sub-grid">
+                            <img src="assets/33.png" loading="lazy">
+                            <img src="assets/34.png" loading="lazy">
+                        </div>
+                    </div>
+
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><img src="assets/38.gif" loading="lazy"></div>
+
+                    <div class="editorial-text">
+                        <p data-en="<strong>The AR Food Identifier:</strong> Pointing smartphone cameras at raw goods to overlay digital data cards with origin details, safety certifications, and storage tips." data-zh="<strong>AR 食材识别器：</strong>将智能手机摄像头对准生鲜食材，即可在屏幕上叠加数字数据卡，显示产地详情、安全认证以及储存建议。"><strong>The AR Food Identifier:</strong> Pointing smartphone cameras at raw goods to overlay digital data cards with origin details, safety certifications, and storage tips.</p>
+                    </div>
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><img src="assets/40.gif" loading="lazy"></div>
+
+                    <div class="editorial-text">
+                        <p data-en="<strong>Redefining User Flow:</strong> Successfully managing the market's dynamic flow by catering to both elderly residents and young &quot;city-walkers,&quot; enhancing operational efficiency and community participation." data-zh="<strong>重新定义用户动线：</strong>通过同时满足老年居民和年轻“城市漫游者 (city-walkers)”的需求，成功管理了市场的动态人流，从而提高了运营效率和社区参与度。"><strong>Redefining User Flow:</strong> Successfully managing the market's dynamic flow by catering to both elderly residents and young "city-walkers," enhancing operational efficiency and community participation.</p>
+                    </div>
+                    <div class="inline-image-wrap full"><img src="assets/35.png" loading="lazy"></div>
+                </div>
+            </section>
+
+            <div style="border-bottom: 1px solid #111; margin-bottom: 4rem;"></div>
+
+            <section class="narrative-gallery" style="margin-bottom: 0;">
+                <div class="gallery-text no-border-bottom" data-en="Offline Visual Design" data-zh="线下视觉设计展示">Offline Visual Design</div>
+                <div class="gallery-item full-width"><img src="assets/36.png" loading="lazy"></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                langCheckbox.checked = (lang === 'zh');
+
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 使用 innerHTML 保护内部的 <strong> 等 HTML 标签
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化：读取本地缓存同步语言状态
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>

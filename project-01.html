@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarriagEmArkeT - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: bold; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; } /* 取消内嵌按钮组的底边距 */
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Hero Media */
+        .hero-media { width: 100%; aspect-ratio: 16/9; background-color: transparent; margin-bottom: 4rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hero-media img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Editorial Text Section */
+        .detail-text-section { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; margin-bottom: 4rem; border-bottom: 1px solid #111; padding-bottom: 4rem; }
+        .section-heading { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; }
+        .editorial-text { column-count: 2; column-gap: 2rem; font-size: 1.1rem; color: #333; }
+        .editorial-text p { margin-bottom: 1.5rem; break-inside: avoid; }
+
+        /* YouTube Video Wrapper */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 4rem; border: 1px solid #111; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Narrative Gallery */
+        .narrative-gallery { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem; }
+        .gallery-text { font-size: 1.2rem; color: #111; max-width: 900px; margin-top: 2rem; margin-bottom: 1rem; border-left: 3px solid #111; padding-left: 1rem; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        .gallery-item { width: 100%; background-color: transparent; display: flex; align-items: center; justify-content: center; }
+        
+        /* 已经去掉了所有边框 (border: none) */
+        .gallery-item img { width: 100%; height: auto; object-fit: contain; border: none; }
+        .gallery-item.full-width { grid-column: span 2; }
+
+        /* 3:7 排版特设类 */
+        .side-by-side-ratio { display: grid; grid-template-columns: 0.3fr 0.7fr; gap: 2rem; align-items: center; margin-top: 2rem; }
+        .side-by-side-ratio .text-block { font-size: 1.2rem; color: #111; border-left: 3px solid #111; padding-left: 1rem; line-height: 1.4; }
+        
+        /* 已经去掉了所有边框 (border: none) */
+        .side-by-side-ratio .media-block video { width: 100%; height: auto; display: block; border: none; }
+
+        /* ==================================================== */
+        /* 新增的语言切换滑块和中文排版专用的 CSS */
+        /* ==================================================== */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        /* 中文模式下，导航按钮从上到下正向排列 */
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            .detail-text-section { grid-template-columns: 1fr; gap: 1rem; }
+            .editorial-text { column-count: 1; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.full-width { grid-column: span 1; }
+            .side-by-side-ratio { grid-template-columns: 1fr; gap: 1.5rem; }
+            
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="MarriagEmArkeT" data-zh="MarriagEmArkeT (量化亲密)">MarriagEmArkeT</h1>
+                
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="SOLO PROJECT" data-zh="个人项目">SOLO PROJECT</span> 
+                    </div>
+                    <div class="link-group">
+                        <a href="https://marriagemarket.onrender.com" target="_blank" class="action-btn" data-en="Project Website ->" data-zh="项目网站 ->">Project Website -></a>
+                        <a href="https://joysong.itch.io/marriage-market" target="_blank" class="action-btn" data-en="Game Download (Itch.io) ->" data-zh="游戏下载 (Itch.io) ->">Game Download (Itch.io) -></a>
+                    </div>
+                </div>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色职责">Role</span>
+                        <span class="meta-value" data-en="Concept to Execution" data-zh="概念构思至落地执行">Concept to Execution</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="使用工具">Tools</span>
+                        <span class="meta-value" data-en="Unity, Gemini, Three.js, Figma" data-zh="Unity, Gemini, Three.js, Figma">Unity, Gemini, Three.js, Figma</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Format" data-zh="作品形式">Format</span>
+                        <span class="meta-value" data-en="Interactive Web Archive & Game" data-zh="交互式网页档案与游戏">Interactive Web Archive & Game</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Year" data-zh="创作年份">Year</span>
+                        <span class="meta-value" data-en="2026" data-zh="2026">2026</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="hero-media">
+                <img src="assets/main.png" alt="MarriagEmArkeT Main">
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Concept & Mechanics" data-zh="概念与机制">Concept & Mechanics</div>
+                <div class="editorial-text">
+                    <p data-en="Stemming from fieldwork at Chinese matchmaking corners, this project reimagines these pre-digital &quot;analog algorithms&quot; as a claustrophobic, surreal butcher shop. Here, complex human lives are reduced to formatted spreadsheets by parents acting as data brokers, highlighting a deeply flawed &quot;Emotional Capitalism&quot; where intimacy is transmuted into tradable capital." data-zh="基于在中国相亲角的田野调查，本项目将这些前数字时代的“模拟算法”重构为一个幽闭、超现实的肉铺。在这里，复杂的人生被充当数据掮客的父母简化为格式化的电子表格，以此凸显一种极其扭曲的“情感资本主义”——亲密关系被转化为了可交易的资本。">Stemming from fieldwork at Chinese matchmaking corners, this project reimagines these pre-digital "analog algorithms" as a claustrophobic, surreal butcher shop. Here, complex human lives are reduced to formatted spreadsheets by parents acting as data brokers, highlighting a deeply flawed "Emotional Capitalism" where intimacy is transmuted into tradable capital.</p>
+                    
+                    <p data-en="The project manifests as an interactive 3D web archive and a Unity game. Users interact with a parametric data-visualizer, manipulating sliders to physically distort biological forms based on sociological data. In the game, players navigate 16 &quot;meat specimens&quot; suspended under deceptive &quot;fresh-food lamps,&quot; utilizing a &quot;System Glitch&quot; mechanic to toggle the light and expose the harsh individual truths beneath the beautified data." data-zh="项目以交互式 3D 网页档案和 Unity 游戏的形式呈现。用户可通过参数化的数据可视化工具，滑动滑块根据社会学数据对生物形态进行物理扭曲。在游戏中，玩家穿梭于悬挂在欺骗性“生鲜灯”下的 16 个“肉类标本”之间，利用“系统故障”机制切换灯光，揭示被美化数据掩盖下残酷的个体真相。">The project manifests as an interactive 3D web archive and a Unity game. Users interact with a parametric data-visualizer, manipulating sliders to physically distort biological forms based on sociological data. In the game, players navigate 16 "meat specimens" suspended under deceptive "fresh-food lamps," utilizing a "System Glitch" mechanic to toggle the light and expose the harsh individual truths beneath the beautified data.</p>
+                </div>
+            </section>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Execution & AI" data-zh="执行与 AI 融合">Execution & AI</div>
+                <div class="editorial-text">
+                    <p data-en="To realize this computational critique, I seamlessly integrated AI tools into a multi-software workflow while maintaining full creative direction. Using Tripo AI, I generated initial 3D base-meshes for the &quot;flesh&quot; specimens, which I then imported into Blender for iterative manual sculpting to achieve intricate organic textures." data-zh="为了实现这一计算性批判，我在保持完全创意主导的同时，将 AI 工具无缝整合到多软件工作流中。我使用 Tripo AI 生成了“肉块”标本的初始 3D 基础网格，随后将其导入 Blender 进行迭代式的手工雕刻，以呈现复杂的有机纹理。">To realize this computational critique, I seamlessly integrated AI tools into a multi-software workflow while maintaining full creative direction. Using Tripo AI, I generated initial 3D base-meshes for the "flesh" specimens, which I then imported into Blender for iterative manual sculpting to achieve intricate organic textures.</p>
+                    
+                    <p data-en="Furthermore, I utilized Gemini to optimize the Website and Unity codebase, debug complex interactions, and even assist in the production of the background music, demonstrating a fluid collaboration between human intent and generative AI capabilities." data-zh="此外，我利用 Gemini 优化了网站和 Unity 的代码库，调试复杂的交互逻辑，甚至辅助了背景音乐的制作，充分展现了人类意图与生成式 AI 能力之间流畅的协作。">Furthermore, I utilized Gemini to optimize the Website and Unity codebase, debug complex interactions, and even assist in the production of the background music, demonstrating a fluid collaboration between human intent and generative AI capabilities.</p>
+                </div>
+            </section>
+
+            <section class="video-container">
+                <iframe src="https://www.youtube.com/embed/uAB5wkv_PZU" title="MarriagEmArkeT Presentation Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </section>
+
+            <section class="narrative-gallery">
+                
+                <div class="side-by-side-ratio">
+                    <div class="text-block" data-en="&quot;The marriage market is, in a literal sense, a meat market.&quot;<br><br>The transformation from sociological observation to a surreal space is a process of continuously stripping away reality and reconstructing &quot;pain.&quot;" data-zh="&quot;相亲市场，从字面意义上来说，就是一个肉类交易市场。&quot;<br><br>从社会学观察到超现实空间的转变，是一个不断剥离现实并重构“痛苦”的过程。">
+                        "The marriage market is, in a literal sense, a meat market."<br><br>
+                        The transformation from sociological observation to a surreal space is a process of continuously stripping away reality and reconstructing "pain."
+                    </div>
+                    <div class="media-block">
+                        <video src="assets/01.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                </div>
+
+                <div class="side-by-side-ratio">
+                    <div class="text-block" data-en="Assuming the role of anxious parents coerced by the &quot;social clock&quot; and societal peer pressure, players navigate a claustrophobic market filled with suspended cuts of meat (representing 16 male and female candidates). The core interaction—toggling a virtual &quot;Fresh Meat Lamp&quot;—acts as a computational &quot;system glitch.&quot; It abruptly switches the environment from a red-tinted fantasy to a harsh, clinical white light. This single click instantly strips away the parents' curated data, replacing the formatted profiles with the stark, often agonizing reality of the individuals underneath." data-zh="玩家扮演被“社会时钟”和同辈压力裹挟的焦虑父母，在一个挂满肉块（代表16位男女候选人）的幽闭市场中穿梭。核心交互——切换虚拟的“生鲜灯”——充当着计算性的“系统故障”。它将环境从诱人的红色滤镜瞬间切换为刺眼冰冷的白光。只需轻轻一点，父母精心包装的数据就被瞬间剥离，格式化的个人简介被肉块之下冰冷、甚至令人痛苦的真实个体所取代。">
+                        Assuming the role of anxious parents coerced by the "social clock" and societal peer pressure, players navigate a claustrophobic market filled with suspended cuts of meat (representing 16 male and female candidates). The core interaction—toggling a virtual "Fresh Meat Lamp"—acts as a computational "system glitch." It abruptly switches the environment from a red-tinted fantasy to a harsh, clinical white light. This single click instantly strips away the parents' curated data, replacing the formatted profiles with the stark, often agonizing reality of the individuals underneath.
+                    </div>
+                    <div class="media-block">
+                        <video src="assets/02.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                </div>
+
+                <div class="gallery-text" data-en="<strong>RED LIGHTING (PACKAGING AND FANTASY):</strong> Under the glow of fresh-food lamps, the environment takes on an enticing, retouched pink hue. During this phase, the meat cuts (candidates) display data beautified and formatted by algorithms: houses, cars, high salaries, and obedience.<br><br><strong>WHITE LIGHTING (SYSTEM GLITCH/TRUTH):</strong> When the player flips the switch, the environment instantly transitions to a harsh, cold, clinical white light. This &quot;system glitch&quot; strips away all beautification parameters, revealing the erased individual truths behind the meat—unfulfilled ambitions, hidden debts, or the painful cries of subjectivity." data-zh="<strong>红光（包装与幻想）：</strong>在生鲜灯的照耀下，环境呈现出诱人、被修饰过的粉红色调。在此阶段，肉块（候选人）展示的是被算法美化和格式化的数据：房子、车子、高薪和顺从。<br><br><strong>白光（系统故障/真相）：</strong>当玩家按下开关，环境瞬间过渡到刺眼、冰冷、临床般的白光。这种“系统故障”剥离了所有美化参数，揭示了肉块背后被抹杀的个体真相——未竟的野心、隐秘的债务，或是主体性痛苦的呐喊。">
+                    <strong>RED LIGHTING (PACKAGING AND FANTASY):</strong> Under the glow of fresh-food lamps, the environment takes on an enticing, retouched pink hue. During this phase, the meat cuts (candidates) display data beautified and formatted by algorithms: houses, cars, high salaries, and obedience.<br><br>
+                    <strong>WHITE LIGHTING (SYSTEM GLITCH/TRUTH):</strong> When the player flips the switch, the environment instantly transitions to a harsh, cold, clinical white light. This "system glitch" strips away all beautification parameters, revealing the erased individual truths behind the meat—unfulfilled ambitions, hidden debts, or the painful cries of subjectivity.
+                </div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="assets/03.png" alt="Red Lighting Interaction"></div>
+                    <div class="gallery-item"><img src="assets/04.png" alt="White Lighting Interaction"></div>
+                </div>
+                
+                <div class="gallery-item full-width" style="margin-top: -1rem;">
+                    <video src="assets/03.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video>
+                </div>
+
+                <div class="gallery-text" data-en="Once you finalize your &quot;selection&quot; and complete the transaction, the system generates a summary filled with dark humor." data-zh="一旦你最终确定“选择”并完成交易，系统会生成一份充满黑色幽默的总结报告。">
+                    Once you finalize your "selection" and complete the transaction, the system generates a summary filled with dark humor.
+                </div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="assets/05.png" alt="Game Ending 1"></div>
+                    <div class="gallery-item"><img src="assets/06.png" alt="Game Ending 2"></div>
+                </div>
+
+                <div class="gallery-text" style="margin-top: 4rem;">
+                    <strong data-en="Interactive Web Archive Overview" data-zh="交互网页档案概览">Interactive Web Archive Overview</strong>
+                </div>
+                
+                <div class="side-by-side-ratio" style="margin-top: 1rem;">
+                    <div class="text-block" style="border-left: none; padding-left: 0;">
+                        <span data-en="Explore the full conceptual framework, parametric interactions, and research documentation on the project website." data-zh="在项目网站上探索完整的概念框架、参数化交互以及研究文献。">Explore the full conceptual framework, parametric interactions, and research documentation on the project website.</span><br><br>
+                        <a href="https://marriagemarket.onrender.com" target="_blank" class="action-btn" style="display: inline-block;" data-en="Project Website ->" data-zh="项目网站 ->">Project Website -></a>
+                    </div>
+                    <div class="media-block">
+                        <video src="assets/首页.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    </div>
+                </div>
+                
+                <div class="gallery-grid" style="margin-top: 4rem;">
+                    <div class="gallery-item"><video src="assets/lab2.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
+                    <div class="gallery-item"><video src="assets/game.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
+                    <div class="gallery-item"><video src="assets/doc.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
+                    <div class="gallery-item"><video src="assets/文献.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
+                </div>
+
+                <div class="gallery-item full-width" style="margin-top: 4rem;">
+                    <img src="assets/07.png" alt="Website Overview">
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                // 1. 切换 Checkbox 状态
+                langCheckbox.checked = (lang === 'zh');
+
+                // 2. 切换 Body Class (控制左侧导航条在中文时的正向排版)
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 3. 替换内容，这里使用 innerHTML 保护 <br> 和 <strong> 标签不失效
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化：每次进网页先读取 localStorage 里的记忆
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+</body>
+</html>
