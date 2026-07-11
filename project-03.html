@@ -81,7 +81,7 @@
         .narrative-gallery { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem; }
         .gallery-text { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; color: #111; margin-top: 2rem; margin-bottom: 0.5rem; border-bottom: 1px solid #111; padding-bottom: 0.5rem; }
         .gallery-item { width: 100%; background-color: transparent; display: flex; align-items: center; justify-content: center; }
-        .gallery-item img { width: 100%; height: auto; object-fit: contain; border: 1px solid #ddd; }
+        .gallery-item img, .gallery-item video { width: 100%; height: auto; object-fit: contain; border: 1px solid #ddd; }
         .gallery-item.full-width { grid-column: span 2; }
 
         /* ==================================================== */
@@ -270,7 +270,7 @@
                 
                 <div class="gallery-text" data-en="Left & Right Hand Operation" data-zh="左右手操作演示">Left & Right Hand Operation</div>
                 <div class="gallery-item full-width">
-                    <img src="assets/26.gif" alt="Hand Operation Gesture Interaction" loading="lazy">
+                    <video src="assets/26.mp4" autoplay loop muted playsinline loading="lazy"></video>
                 </div>
 
                 <div class="gallery-text" data-en="Multiplayer Online Collaboration" data-zh="多人在线协作">Multiplayer Online Collaboration</div>
