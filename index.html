@@ -13,7 +13,7 @@
         }
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #f4f4f4; 
+            background-color: #f4f4f4;
             color: #111;
             line-height: 1.2; 
             overflow-x: hidden;
@@ -158,6 +158,33 @@
         }
         .project-item:hover .project-media img { transform: scale(1.03); }
 
+        /* ==================================================== */
+        /* 插画+制品：制品展示条带 (Merch Strip) */
+        /* ==================================================== */
+        .merch-strip { position: relative; overflow: hidden; margin-bottom: 3rem; }
+        .merch-strip-track {
+            display: flex; align-items: flex-end; gap: 2.5rem; width: max-content; will-change: transform;
+        }
+        .merch-item { display: flex; flex-direction: column; align-items: center; flex: 0 0 auto; cursor: pointer; }
+        .merch-item img {
+            border: 1px solid #111; background: #fff; display: block;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .merch-single img { height: 220px; width: auto; }
+
+        .merch-stack { position: relative; height: 220px; aspect-ratio: 3 / 4; margin-bottom: 10px; }
+        .merch-stack img {
+            position: absolute; top: 0; left: 0; width: 94%; height: 94%; object-fit: cover;
+        }
+        .merch-stack .stack-back { transform: translate(8px, 8px) rotate(-1.5deg); z-index: 1; }
+        .merch-stack .stack-front { transform: translate(0, 0) rotate(1deg); z-index: 2; }
+
+        .merch-title { margin-top: 0.8rem; font-size: 0.95rem; font-weight: bold; text-align: center; }
+
+        .style-strip-arrow.is-disabled { opacity: 0.25; pointer-events: none; }
+
+        .merch-divider { border: none; border-top: 1px solid #ccc; margin: 0 0 3rem; }
+
         /* INFO 版块样式 */
         .info-section {
             margin-top: 8rem; padding-top: 4rem; border-top: 1px solid #111; margin-bottom: 5rem;
@@ -211,6 +238,15 @@
         }
         .close-modal-btn:hover { transform: scale(1.1); color: #666; }
 
+        /* 制品放大浮层内容：复用简历弹窗的毛玻璃背景，多张图纵向排列可滚动查看 */
+        .merch-modal-content {
+            position: relative; max-width: 700px; width: 90%; margin: auto;
+            display: flex; flex-direction: column; gap: 1.5rem;
+        }
+        .merch-modal-content img {
+            width: 100%; height: auto; display: block;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15); background: #fff;
+        }
         /* ==================================================== */
         /* 中英文切换滑块 */
         /* ==================================================== */
@@ -256,6 +292,11 @@
 
             .project-item { grid-template-columns: 1fr; }
             .project-media { order: -1; }
+            .merch-strip { margin-bottom: 2rem; }
+            .merch-strip-track { gap: 1.5rem; }
+            .merch-single img { height: 150px; }
+            .merch-stack { height: 150px; margin-bottom: 8px; }
+            .merch-divider { margin: 0 0 2rem; }
             .info-section { margin-top: 5rem; padding-top: 3rem; }
             .contact-list li { flex-direction: column; align-items: flex-start; gap: 5px; margin-bottom: 1.5rem; }
             .contact-label { width: auto; }
@@ -271,6 +312,7 @@
             .resume-modal { padding: 4rem 0 2rem 0; align-items: flex-start; } /* 顶部留出X按钮空间 */
             .close-modal-btn { top: 10px; right: 20px; font-size: 2.5rem; }
             .resume-modal-content { width: 95%; margin: 0 auto; }
+            .merch-modal-content { width: 95%; gap: 1rem; }
         }
     </style>
 </head>
@@ -508,7 +550,30 @@
             <div class="category-content" id="illustration">
                 <section class="project-list">
 
-                    <!-- TODO: 插画+制品 项目条目待补充，结构与上方 project-item 保持一致 -->
+                    <div class="merch-strip" id="merchStrip">
+                        <div class="merch-strip-track" id="merchStripTrack">
+                            <div class="merch-item" data-images='["assets/merch-neuralcorruption-cover-full.jpg","assets/merch-neuralcorruption-detail-full.jpg"]'>
+                                <div class="merch-stack">
+                                    <img class="stack-back" src="assets/merch-neuralcorruption-detail.jpg" alt="Neural Corruption #039 item breakdown and pricing">
+                                    <img class="stack-front" src="assets/merch-neuralcorruption-cover.jpg" alt="Neural Corruption #039 preview">
+                                </div>
+                                <div class="merch-title">Neural Corruption #039</div>
+                            </div>
+
+                            <div class="merch-item" data-images='["assets/merch-a1152-full.jpg"]'>
+                                <div class="merch-single">
+                                    <img src="assets/merch-a1152.jpg" alt="A1152 Chinese New Year merch set preview">
+                                </div>
+                                <div class="merch-title" data-en="A1152 New Year Set" data-zh="A1152 新年套装">A1152 New Year Set</div>
+                            </div>
+                        </div>
+                        <button type="button" class="style-strip-arrow prev" aria-label="Previous">&lt;</button>
+                        <button type="button" class="style-strip-arrow next" aria-label="Next">&gt;</button>
+                    </div>
+
+                    <hr class="merch-divider">
+
+                    <!-- TODO: 插画作品堆放区，待补充 -->
 
                 </section>
             </div>
@@ -546,6 +611,11 @@
         </div>
     </div>
 
+    <div id="merch-modal" class="resume-modal">
+        <span class="close-modal-btn" onclick="closeMerchModal()">&times;</span>
+        <div class="merch-modal-content" id="merch-modal-content" onclick="event.stopPropagation()"></div>
+    </div>
+
     <script>
         // --- 简历弹窗控制逻辑 ---
         function openResume(e) {
@@ -564,6 +634,31 @@
             if (e.target === this) {
                 closeResume();
             }
+        });
+
+        // --- 制品放大浮层控制逻辑：点击制品卡片，大图浮出，背景虚化，多张图可纵向滚动查看 ---
+        function openMerchModal(images) {
+            const content = document.getElementById('merch-modal-content');
+            content.innerHTML = images.map(src => `<img src="${src}" alt="">`).join('');
+            document.getElementById('merch-modal').classList.add('show');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeMerchModal() {
+            document.getElementById('merch-modal').classList.remove('show');
+            document.body.classList.remove('modal-open');
+        }
+
+        document.getElementById('merch-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMerchModal();
+            }
+        });
+
+        document.querySelectorAll('.merch-item[data-images]').forEach(item => {
+            item.addEventListener('click', () => {
+                openMerchModal(JSON.parse(item.dataset.images));
+            });
         });
 
         // --- 风格展示条带：不自动滚动，点击左右箭头才移动 ---
@@ -641,6 +736,83 @@
 
             strip.querySelector('.style-strip-arrow.prev').addEventListener('click', () => goToStep(-1));
             strip.querySelector('.style-strip-arrow.next').addEventListener('click', () => goToStep(1));
+        })();
+
+        // --- 制品展示条带：一排横向排列，之后还会陆续加新的一套，不做首尾循环，到头就停 ---
+        (function () {
+            const strip = document.getElementById('merchStrip');
+            const track = document.getElementById('merchStripTrack');
+            if (!strip || !track) return;
+
+            const items = Array.from(track.children);
+            const EASE = 10;
+            const prevBtn = strip.querySelector('.style-strip-arrow.prev');
+            const nextBtn = strip.querySelector('.style-strip-arrow.next');
+
+            let positions = [];
+            let maxOffset = 0;
+            let offset = 0;
+            let manualTarget = null;
+            let rafId = null;
+
+            function measure() {
+                positions = items.map(item => item.offsetLeft);
+                maxOffset = Math.max(0, track.scrollWidth - strip.clientWidth);
+            }
+
+            function updateArrows() {
+                prevBtn.classList.toggle('is-disabled', offset <= 0.5);
+                nextBtn.classList.toggle('is-disabled', offset >= maxOffset - 0.5);
+            }
+
+            function render() {
+                const clamped = Math.min(Math.max(offset, 0), maxOffset);
+                track.style.transform = `translateX(${-clamped}px)`;
+                updateArrows();
+            }
+
+            function step(ts) {
+                const dt = step.last ? (ts - step.last) / 1000 : 0;
+                step.last = ts;
+
+                const diff = manualTarget - offset;
+                if (Math.abs(diff) < 0.5) {
+                    offset = manualTarget;
+                    manualTarget = null;
+                    render();
+                    rafId = null;
+                    step.last = null;
+                    return;
+                }
+                offset += diff * Math.min(1, dt * EASE);
+                render();
+                rafId = requestAnimationFrame(step);
+            }
+
+            function goToStep(dir) {
+                if (!positions.length) return;
+                const cur = manualTarget !== null ? manualTarget : offset;
+                let target;
+                if (dir > 0) {
+                    const next = positions.find(p => p > cur + 1);
+                    target = next !== undefined ? Math.min(next, maxOffset) : maxOffset;
+                } else {
+                    const prev = positions.filter(p => p < cur - 1);
+                    target = prev.length ? prev[prev.length - 1] : 0;
+                }
+                manualTarget = target;
+                if (rafId === null) {
+                    rafId = requestAnimationFrame(step);
+                }
+            }
+
+            measure();
+            render();
+            window.addEventListener('load', () => { measure(); render(); });
+            window.addEventListener('resize', () => { measure(); render(); });
+
+            prevBtn.addEventListener('click', () => goToStep(-1));
+            nextBtn.addEventListener('click', () => goToStep(1));
         })();
 
         document.addEventListener('DOMContentLoaded', () => {
