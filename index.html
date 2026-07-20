@@ -77,6 +77,30 @@
         .hero-resume-btn:hover { background-color: #111; color: #fff; }
 
         /* ==================================================== */
+        /* 设计风格滚动条带 (Style Strip) */
+        /* ==================================================== */
+        .style-strip { position: relative; overflow: hidden; margin-bottom: 5rem; }
+        .style-strip-track {
+            display: flex; width: max-content; gap: 1.5rem; will-change: transform;
+        }
+        .style-strip-track img {
+            height: 260px; width: auto; display: block;
+            border: 1px solid #111; background: #fff;
+        }
+        .style-strip-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 44px; height: 44px; border-radius: 50%; border: 1px solid #111;
+            background: rgba(244, 244, 244, 0.9); color: #111;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; line-height: 1; cursor: pointer;
+            opacity: 0.85; transition: opacity 0.25s ease, background 0.25s ease, color 0.25s ease;
+            z-index: 5;
+        }
+        .style-strip-arrow:hover { opacity: 1; background: #111; color: #fff; }
+        .style-strip-arrow.prev { left: 12px; }
+        .style-strip-arrow.next { right: 12px; }
+
+        /* ==================================================== */
         /* 作品分类悬停标签 (Category Filters) */
         /* ==================================================== */
         .category-filters {
@@ -237,7 +261,12 @@
             .contact-label { width: auto; }
             
             .hero-resume-btn { margin-left: 0; margin-top: 15px; top: 0; display: inline-block; }
-            
+
+            .style-strip { margin-bottom: 3rem; }
+            .style-strip-track { gap: 1rem; }
+            .style-strip-track img { height: 150px; }
+            .style-strip-arrow { width: 36px; height: 36px; font-size: 1.1rem; }
+
             /* 手机端弹窗样式微调 */
             .resume-modal { padding: 4rem 0 2rem 0; align-items: flex-start; } /* 顶部留出X按钮空间 */
             .close-modal-btn { top: 10px; right: 20px; font-size: 2.5rem; }
@@ -273,9 +302,37 @@
                 </h1>
             </section>
 
+            <div class="style-strip" id="styleStrip">
+                <div class="style-strip-track" id="styleStripTrack">
+                    <img src="assets/style1.jpg" alt="Design style 1">
+                    <img src="assets/style2.jpg" alt="Design style 2">
+                    <img src="assets/style3.jpg" alt="Design style 3">
+                    <img src="assets/style4.jpg" alt="Design style 4">
+                    <img src="assets/style5.jpg" alt="Design style 5">
+                    <img src="assets/style6.jpg" alt="Design style 6">
+                    <img src="assets/style7.jpg" alt="Design style 7">
+                    <img src="assets/style8.jpg" alt="Design style 8">
+                    <img src="assets/style9.jpg" alt="Design style 9">
+                    <img src="assets/style10.jpg" alt="Design style 10">
+                    <img src="assets/style1.jpg" alt="Design style 1" aria-hidden="true">
+                    <img src="assets/style2.jpg" alt="Design style 2" aria-hidden="true">
+                    <img src="assets/style3.jpg" alt="Design style 3" aria-hidden="true">
+                    <img src="assets/style4.jpg" alt="Design style 4" aria-hidden="true">
+                    <img src="assets/style5.jpg" alt="Design style 5" aria-hidden="true">
+                    <img src="assets/style6.jpg" alt="Design style 6" aria-hidden="true">
+                    <img src="assets/style7.jpg" alt="Design style 7" aria-hidden="true">
+                    <img src="assets/style8.jpg" alt="Design style 8" aria-hidden="true">
+                    <img src="assets/style9.jpg" alt="Design style 9" aria-hidden="true">
+                    <img src="assets/style10.jpg" alt="Design style 10" aria-hidden="true">
+                </div>
+                <button type="button" class="style-strip-arrow prev" aria-label="Previous">&lt;</button>
+                <button type="button" class="style-strip-arrow next" aria-label="Next">&gt;</button>
+            </div>
+
             <div class="category-filters" id="works">
                 <div class="filter-tab active" data-target="interactive" data-en="Interactive & Games" data-zh="交互与游戏">Interactive & Games</div>
                 <div class="filter-tab" data-target="brand" data-en="Brand, Book & Graphic" data-zh="品牌、书籍、平面">Brand, Book & Graphic</div>
+                <div class="filter-tab" data-target="illustration" data-en="Illustration & Merch" data-zh="插画+制品">Illustration & Merch</div>
             </div>
 
             <div class="category-content active" id="interactive">
@@ -448,6 +505,14 @@
                 </section>
             </div>
 
+            <div class="category-content" id="illustration">
+                <section class="project-list">
+
+                    <!-- TODO: 插画+制品 项目条目待补充，结构与上方 project-item 保持一致 -->
+
+                </section>
+            </div>
+
             <section id="info" class="info-section">
                 <h2 class="info-heading" data-en="Info" data-zh="个人简介">Info</h2>
                 <div class="info-content">
@@ -500,6 +565,83 @@
                 closeResume();
             }
         });
+
+        // --- 风格展示条带：不自动滚动，点击左右箭头才移动 ---
+        (function () {
+            const strip = document.getElementById('styleStrip');
+            const track = document.getElementById('styleStripTrack');
+            if (!strip || !track) return;
+
+            const allImgs = Array.from(track.children);
+            const originalCount = allImgs.length / 2; // 后一半是无缝循环用的重复图
+            const EASE = 10; // 点击箭头后缓动到目标的速度系数
+
+            let halfWidth = 0;
+            let positions = []; // 前半部分（真实图片）各自的 offsetLeft，升序
+            let offset = 0; // 不做环绕处理的累计偏移量，渲染时再取模
+            let manualTarget = null;
+            let rafId = null;
+            let hasInteracted = false; // 用户点过箭头之后，就不再强制回到初始位置
+
+            function measure() {
+                halfWidth = track.scrollWidth / 2;
+                positions = allImgs.slice(0, originalCount).map(img => img.offsetLeft);
+                if (!hasInteracted && positions.length) {
+                    // 初始展示从最后一张（style10）开始，这样第一屏看到的是 style10、style1、style2...
+                    offset = positions[positions.length - 1];
+                }
+            }
+
+            function render() {
+                const shown = ((offset % halfWidth) + halfWidth) % halfWidth;
+                track.style.transform = `translateX(${-shown}px)`;
+            }
+
+            function step(ts) {
+                const dt = step.last ? (ts - step.last) / 1000 : 0;
+                step.last = ts;
+
+                const diff = manualTarget - offset;
+                if (Math.abs(diff) < 0.5) {
+                    offset = manualTarget;
+                    manualTarget = null;
+                    render();
+                    rafId = null;
+                    step.last = null;
+                    return;
+                }
+                offset += diff * Math.min(1, dt * EASE);
+                render();
+                rafId = requestAnimationFrame(step);
+            }
+
+            function goToStep(dir) {
+                if (!halfWidth || !positions.length) return;
+                hasInteracted = true;
+                const base = offset - (((offset % halfWidth) + halfWidth) % halfWidth);
+                const curWrapped = offset - base;
+                let target;
+                if (dir > 0) {
+                    target = positions.find(p => p > curWrapped + 1);
+                    target = (target !== undefined) ? base + target : base + halfWidth + positions[0];
+                } else {
+                    const rev = positions.filter(p => p < curWrapped - 1);
+                    target = rev.length ? base + rev[rev.length - 1] : base - halfWidth + positions[positions.length - 1];
+                }
+                manualTarget = target;
+                if (rafId === null) {
+                    rafId = requestAnimationFrame(step);
+                }
+            }
+
+            measure();
+            render();
+            window.addEventListener('load', () => { measure(); render(); });
+            window.addEventListener('resize', () => { measure(); render(); });
+
+            strip.querySelector('.style-strip-arrow.prev').addEventListener('click', () => goToStep(-1));
+            strip.querySelector('.style-strip-arrow.next').addEventListener('click', () => goToStep(1));
+        })();
 
         document.addEventListener('DOMContentLoaded', () => {
             const langCheckbox = document.getElementById('lang-checkbox');
