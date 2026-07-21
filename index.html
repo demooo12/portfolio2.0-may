@@ -159,9 +159,11 @@
         .project-item:hover .project-media img { transform: scale(1.03); }
 
         /* ==================================================== */
-        /* 插画+制品：制品展示条带 (Merch Strip) */
+        /* 插画+制品：一排放制品条带 + 竖线 + 插画堆 */
         /* ==================================================== */
-        .merch-strip { position: relative; overflow: hidden; margin-bottom: 3rem; }
+        .portfolio-row { display: flex; align-items: flex-end; gap: 2.5rem; margin-bottom: 3rem; }
+
+        .merch-strip { position: relative; overflow: hidden; flex: 1; min-width: 0; }
         .merch-strip-track {
             display: flex; align-items: flex-end; gap: 2.5rem; width: max-content; will-change: transform;
         }
@@ -183,7 +185,30 @@
 
         .style-strip-arrow.is-disabled { opacity: 0.25; pointer-events: none; }
 
-        .merch-divider { border: none; border-top: 1px solid #ccc; margin: 0 0 3rem; }
+        /* 中间的浅竖线 */
+        .row-divider { align-self: stretch; width: 1px; background: #ccc; flex: 0 0 auto; }
+
+        /* 插画堆：几张图轻微错落叠放，点击弹出完整插画墙 */
+        .illust-pile { display: flex; flex-direction: column; align-items: center; flex: 0 0 auto; cursor: pointer; }
+        .illust-pile-stack { position: relative; height: 220px; aspect-ratio: 3 / 4; margin-bottom: 10px; }
+        .illust-pile-stack img {
+            position: absolute; top: 0; left: 0; width: 90%; height: 90%; object-fit: cover;
+            border: 1px solid #111; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .illust-pile-stack .pile-3 { transform: translate(16px, 16px) rotate(-3deg); z-index: 1; }
+        .illust-pile-stack .pile-2 { transform: translate(8px, 8px) rotate(-1.5deg); z-index: 2; }
+        .illust-pile-stack .pile-1 { transform: translate(0, 0) rotate(1.5deg); z-index: 3; }
+
+        /* 插画墙 (Illustration Wall)：瀑布流，平时收在浮层里，点插画堆才展开 */
+        .illust-wall { column-count: 4; column-gap: 1rem; }
+        .illust-wall img {
+            width: 100%; display: block; margin-bottom: 1rem;
+            break-inside: avoid; cursor: pointer;
+            border: 1px solid #111; background: #fff;
+            transition: opacity 0.2s ease;
+        }
+        .illust-wall img:hover { opacity: 0.8; }
+        .illust-wall-modal-content { position: relative; max-width: 1100px; width: 92%; margin: auto; }
 
         /* INFO 版块样式 */
         .info-section {
@@ -239,11 +264,11 @@
         .close-modal-btn:hover { transform: scale(1.1); color: #666; }
 
         /* 制品放大浮层内容：复用简历弹窗的毛玻璃背景，多张图纵向排列可滚动查看 */
-        .merch-modal-content {
+        .image-modal-content {
             position: relative; max-width: 700px; width: 90%; margin: auto;
             display: flex; flex-direction: column; gap: 1.5rem;
         }
-        .merch-modal-content img {
+        .image-modal-content img {
             width: 100%; height: auto; display: block;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15); background: #fff;
         }
@@ -292,11 +317,14 @@
 
             .project-item { grid-template-columns: 1fr; }
             .project-media { order: -1; }
-            .merch-strip { margin-bottom: 2rem; }
+            .portfolio-row { gap: 1rem; margin-bottom: 2rem; }
             .merch-strip-track { gap: 1.5rem; }
             .merch-single img { height: 150px; }
             .merch-stack { height: 150px; margin-bottom: 8px; }
-            .merch-divider { margin: 0 0 2rem; }
+            .illust-pile-stack { height: 150px; margin-bottom: 8px; }
+            .illust-wall { column-count: 2; column-gap: 0.6rem; }
+            .illust-wall img { margin-bottom: 0.6rem; }
+            .illust-wall-modal-content { width: 95%; }
             .info-section { margin-top: 5rem; padding-top: 3rem; }
             .contact-list li { flex-direction: column; align-items: flex-start; gap: 5px; margin-bottom: 1.5rem; }
             .contact-label { width: auto; }
@@ -312,7 +340,7 @@
             .resume-modal { padding: 4rem 0 2rem 0; align-items: flex-start; } /* 顶部留出X按钮空间 */
             .close-modal-btn { top: 10px; right: 20px; font-size: 2.5rem; }
             .resume-modal-content { width: 95%; margin: 0 auto; }
-            .merch-modal-content { width: 95%; gap: 1rem; }
+            .image-modal-content { width: 95%; gap: 1rem; }
         }
     </style>
 </head>
@@ -550,30 +578,39 @@
             <div class="category-content" id="illustration">
                 <section class="project-list">
 
-                    <div class="merch-strip" id="merchStrip">
-                        <div class="merch-strip-track" id="merchStripTrack">
-                            <div class="merch-item" data-images='["assets/merch-neuralcorruption-cover-full.jpg","assets/merch-neuralcorruption-detail-full.jpg"]'>
-                                <div class="merch-stack">
-                                    <img class="stack-back" src="assets/merch-neuralcorruption-detail.jpg" alt="Neural Corruption #039 item breakdown and pricing">
-                                    <img class="stack-front" src="assets/merch-neuralcorruption-cover.jpg" alt="Neural Corruption #039 preview">
+                    <div class="portfolio-row">
+                        <div class="merch-strip" id="merchStrip">
+                            <div class="merch-strip-track" id="merchStripTrack">
+                                <div class="merch-item" data-images='["assets/merch-neuralcorruption-cover-full.jpg","assets/merch-neuralcorruption-detail-full.jpg"]'>
+                                    <div class="merch-stack">
+                                        <img class="stack-back" src="assets/merch-neuralcorruption-detail.jpg" alt="Neural Corruption #039 item breakdown and pricing">
+                                        <img class="stack-front" src="assets/merch-neuralcorruption-cover.jpg" alt="Neural Corruption #039 preview">
+                                    </div>
+                                    <div class="merch-title">Neural Corruption #039</div>
                                 </div>
-                                <div class="merch-title">Neural Corruption #039</div>
-                            </div>
 
-                            <div class="merch-item" data-images='["assets/merch-a1152-full.jpg"]'>
-                                <div class="merch-single">
-                                    <img src="assets/merch-a1152.jpg" alt="A1152 Chinese New Year merch set preview">
+                                <div class="merch-item" data-images='["assets/merch-a1152-full.jpg"]'>
+                                    <div class="merch-single">
+                                        <img src="assets/merch-a1152.jpg" alt="A1152 Chinese New Year merch set preview">
+                                    </div>
+                                    <div class="merch-title" data-en="A1152 New Year Set" data-zh="A1152 新年套装">A1152 New Year Set</div>
                                 </div>
-                                <div class="merch-title" data-en="A1152 New Year Set" data-zh="A1152 新年套装">A1152 New Year Set</div>
                             </div>
+                            <button type="button" class="style-strip-arrow prev" aria-label="Previous">&lt;</button>
+                            <button type="button" class="style-strip-arrow next" aria-label="Next">&gt;</button>
                         </div>
-                        <button type="button" class="style-strip-arrow prev" aria-label="Previous">&lt;</button>
-                        <button type="button" class="style-strip-arrow next" aria-label="Next">&gt;</button>
+
+                        <div class="row-divider"></div>
+
+                        <div class="illust-pile" id="illustPileTrigger">
+                            <div class="illust-pile-stack">
+                                <img class="pile-3" src="assets/illust/illust-03.jpg" alt="">
+                                <img class="pile-2" src="assets/illust/illust-02.jpg" alt="">
+                                <img class="pile-1" src="assets/illust/illust-01.jpg" alt="">
+                            </div>
+                            <div class="merch-title" data-en="Illustrations" data-zh="画作">Illustrations</div>
+                        </div>
                     </div>
-
-                    <hr class="merch-divider">
-
-                    <!-- TODO: 插画作品堆放区，待补充 -->
 
                 </section>
             </div>
@@ -611,22 +648,86 @@
         </div>
     </div>
 
-    <div id="merch-modal" class="resume-modal">
-        <span class="close-modal-btn" onclick="closeMerchModal()">&times;</span>
-        <div class="merch-modal-content" id="merch-modal-content" onclick="event.stopPropagation()"></div>
+    <div id="illust-wall-modal" class="resume-modal">
+        <span class="close-modal-btn" onclick="closeIllustWallModal()">&times;</span>
+        <div class="illust-wall-modal-content" onclick="event.stopPropagation()">
+        <div class="illust-wall">
+            <img src="assets/illust/illust-01.jpg" alt="Illustration 01" data-images='["assets/illust/illust-01.jpg"]'>
+            <img src="assets/illust/illust-02.jpg" alt="Illustration 02" data-images='["assets/illust/illust-02.jpg"]'>
+            <img src="assets/illust/illust-03.jpg" alt="Illustration 03" data-images='["assets/illust/illust-03.jpg"]'>
+            <img src="assets/illust/illust-04.jpg" alt="Illustration 04" data-images='["assets/illust/illust-04.jpg"]'>
+            <img src="assets/illust/illust-05.jpg" alt="Illustration 05" data-images='["assets/illust/illust-05.jpg"]'>
+            <img src="assets/illust/illust-06.jpg" alt="Illustration 06" data-images='["assets/illust/illust-06.jpg"]'>
+            <img src="assets/illust/illust-07.jpg" alt="Illustration 07" data-images='["assets/illust/illust-07.jpg"]'>
+            <img src="assets/illust/illust-08.jpg" alt="Illustration 08" data-images='["assets/illust/illust-08.jpg"]'>
+            <img src="assets/illust/illust-09.jpg" alt="Illustration 09" data-images='["assets/illust/illust-09.jpg"]'>
+            <img src="assets/illust/illust-10.jpg" alt="Illustration 10" data-images='["assets/illust/illust-10.jpg"]'>
+            <img src="assets/illust/illust-11.jpg" alt="Illustration 11" data-images='["assets/illust/illust-11.jpg"]'>
+            <img src="assets/illust/illust-12.jpg" alt="Illustration 12" data-images='["assets/illust/illust-12.jpg"]'>
+            <img src="assets/illust/illust-13.jpg" alt="Illustration 13" data-images='["assets/illust/illust-13.jpg"]'>
+            <img src="assets/illust/illust-14.jpg" alt="Illustration 14" data-images='["assets/illust/illust-14.jpg"]'>
+            <img src="assets/illust/illust-15.jpg" alt="Illustration 15" data-images='["assets/illust/illust-15.jpg"]'>
+            <img src="assets/illust/illust-16.jpg" alt="Illustration 16" data-images='["assets/illust/illust-16.jpg"]'>
+            <img src="assets/illust/illust-17.jpg" alt="Illustration 17" data-images='["assets/illust/illust-17.jpg"]'>
+            <img src="assets/illust/illust-18.jpg" alt="Illustration 18" data-images='["assets/illust/illust-18.jpg"]'>
+            <img src="assets/illust/illust-19.jpg" alt="Illustration 19" data-images='["assets/illust/illust-19.jpg"]'>
+            <img src="assets/illust/illust-20.jpg" alt="Illustration 20" data-images='["assets/illust/illust-20.jpg"]'>
+            <img src="assets/illust/illust-21.jpg" alt="Illustration 21" data-images='["assets/illust/illust-21.jpg"]'>
+            <img src="assets/illust/illust-22.jpg" alt="Illustration 22" data-images='["assets/illust/illust-22.jpg"]'>
+            <img src="assets/illust/illust-23.jpg" alt="Illustration 23" data-images='["assets/illust/illust-23.jpg"]'>
+            <img src="assets/illust/illust-24.jpg" alt="Illustration 24" data-images='["assets/illust/illust-24.jpg"]'>
+            <img src="assets/illust/illust-25.jpg" alt="Illustration 25" data-images='["assets/illust/illust-25.jpg"]'>
+            <img src="assets/illust/illust-26.jpg" alt="Illustration 26" data-images='["assets/illust/illust-26.jpg"]'>
+            <img src="assets/illust/illust-27.jpg" alt="Illustration 27" data-images='["assets/illust/illust-27.jpg"]'>
+            <img src="assets/illust/illust-28.jpg" alt="Illustration 28" data-images='["assets/illust/illust-28.jpg"]'>
+            <img src="assets/illust/illust-29.jpg" alt="Illustration 29" data-images='["assets/illust/illust-29.jpg"]'>
+            <img src="assets/illust/illust-30.jpg" alt="Illustration 30" data-images='["assets/illust/illust-30.jpg"]'>
+            <img src="assets/illust/illust-31.jpg" alt="Illustration 31" data-images='["assets/illust/illust-31.jpg"]'>
+            <img src="assets/illust/illust-32.jpg" alt="Illustration 32" data-images='["assets/illust/illust-32.jpg"]'>
+            <img src="assets/illust/illust-33.jpg" alt="Illustration 33" data-images='["assets/illust/illust-33.jpg"]'>
+            <img src="assets/illust/illust-34.jpg" alt="Illustration 34" data-images='["assets/illust/illust-34.jpg"]'>
+            <img src="assets/illust/illust-35.jpg" alt="Illustration 35" data-images='["assets/illust/illust-35.jpg"]'>
+            <img src="assets/illust/illust-36.jpg" alt="Illustration 36" data-images='["assets/illust/illust-36.jpg"]'>
+            <img src="assets/illust/illust-37.jpg" alt="Illustration 37" data-images='["assets/illust/illust-37.jpg"]'>
+            <img src="assets/illust/illust-38.jpg" alt="Illustration 38" data-images='["assets/illust/illust-38.jpg"]'>
+            <img src="assets/illust/illust-39.jpg" alt="Illustration 39" data-images='["assets/illust/illust-39.jpg"]'>
+            <img src="assets/illust/illust-40.jpg" alt="Illustration 40" data-images='["assets/illust/illust-40.jpg"]'>
+            <img src="assets/illust/illust-41.jpg" alt="Illustration 41" data-images='["assets/illust/illust-41.jpg"]'>
+            <img src="assets/illust/illust-42.jpg" alt="Illustration 42" data-images='["assets/illust/illust-42.jpg"]'>
+            <img src="assets/illust/illust-43.jpg" alt="Illustration 43" data-images='["assets/illust/illust-43.jpg"]'>
+            <img src="assets/illust/illust-44.jpg" alt="Illustration 44" data-images='["assets/illust/illust-44.jpg"]'>
+            <img src="assets/illust/illust-45.jpg" alt="Illustration 45" data-images='["assets/illust/illust-45.jpg"]'>
+            <img src="assets/illust/illust-46.jpg" alt="Illustration 46" data-images='["assets/illust/illust-46.jpg"]'>
+            <img src="assets/illust/illust-47.jpg" alt="Illustration 47" data-images='["assets/illust/illust-47.jpg"]'>
+            <img src="assets/illust/illust-48.jpg" alt="Illustration 48" data-images='["assets/illust/illust-48.jpg"]'>
+            <img src="assets/illust/illust-49.jpg" alt="Illustration 49" data-images='["assets/illust/illust-49.jpg"]'>
+        </div>
+        </div>
+    </div>
+
+    <div id="image-modal" class="resume-modal">
+        <span class="close-modal-btn" onclick="closeImageModal()">&times;</span>
+        <div class="image-modal-content" id="image-modal-content" onclick="event.stopPropagation()"></div>
     </div>
 
     <script>
+        // 多个浮层可能同时叠着开（比如插画墙里再点开单张大图），
+        // 只有当所有浮层都关掉之后才恢复底层滚动
+        function updateBodyScrollLock() {
+            const anyOpen = document.querySelector('.resume-modal.show');
+            document.body.classList.toggle('modal-open', !!anyOpen);
+        }
+
         // --- 简历弹窗控制逻辑 ---
         function openResume(e) {
             e.preventDefault(); // 阻止原本的链接跳转
             document.getElementById('resume-modal').classList.add('show');
-            document.body.classList.add('modal-open'); // 锁定底层滚动
+            updateBodyScrollLock();
         }
 
         function closeResume() {
             document.getElementById('resume-modal').classList.remove('show');
-            document.body.classList.remove('modal-open'); // 恢复底层滚动
+            updateBodyScrollLock();
         }
 
         // 点击背景空白处关闭弹窗
@@ -636,30 +737,49 @@
             }
         });
 
-        // --- 制品放大浮层控制逻辑：点击制品卡片，大图浮出，背景虚化，多张图可纵向滚动查看 ---
-        function openMerchModal(images) {
-            const content = document.getElementById('merch-modal-content');
+        // --- 制品/插画放大浮层控制逻辑：点击卡片，大图浮出，背景虚化，多张图可纵向滚动查看 ---
+        function openImageModal(images) {
+            const content = document.getElementById('image-modal-content');
             content.innerHTML = images.map(src => `<img src="${src}" alt="">`).join('');
-            document.getElementById('merch-modal').classList.add('show');
-            document.body.classList.add('modal-open');
+            document.getElementById('image-modal').classList.add('show');
+            updateBodyScrollLock();
         }
 
-        function closeMerchModal() {
-            document.getElementById('merch-modal').classList.remove('show');
-            document.body.classList.remove('modal-open');
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.remove('show');
+            updateBodyScrollLock();
         }
 
-        document.getElementById('merch-modal').addEventListener('click', function(e) {
+        document.getElementById('image-modal').addEventListener('click', function(e) {
             if (e.target === this) {
-                closeMerchModal();
+                closeImageModal();
             }
         });
 
-        document.querySelectorAll('.merch-item[data-images]').forEach(item => {
+        document.querySelectorAll('.merch-item[data-images], .illust-wall img[data-images]').forEach(item => {
             item.addEventListener('click', () => {
-                openMerchModal(JSON.parse(item.dataset.images));
+                openImageModal(JSON.parse(item.dataset.images));
             });
         });
+
+        // --- 插画堆浮层控制逻辑：点插画堆，展开完整插画墙（还是现在这套瀑布流排版），背景虚化 ---
+        function openIllustWallModal() {
+            document.getElementById('illust-wall-modal').classList.add('show');
+            updateBodyScrollLock();
+        }
+
+        function closeIllustWallModal() {
+            document.getElementById('illust-wall-modal').classList.remove('show');
+            updateBodyScrollLock();
+        }
+
+        document.getElementById('illust-wall-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeIllustWallModal();
+            }
+        });
+
+        document.getElementById('illustPileTrigger').addEventListener('click', openIllustWallModal);
 
         // --- 风格展示条带：不自动滚动，点击左右箭头才移动 ---
         (function () {
