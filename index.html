@@ -153,10 +153,12 @@
             display: flex; align-items: center; justify-content: center; overflow: hidden; 
         }
         .media-link { display: block; width: 100%; height: 100%; }
-        .project-media img {
+        .project-media img,
+        .project-media video {
             width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease;
         }
-        .project-item:hover .project-media img { transform: scale(1.03); }
+        .project-item:hover .project-media img,
+        .project-item:hover .project-media video { transform: scale(1.03); }
 
         /* ==================================================== */
         /* 插画+制品：一排放制品条带 + 竖线 + 插画堆 */
@@ -172,14 +174,23 @@
             border: 1px solid #111; background: #fff; display: block;
             box-shadow: 0 2px 12px rgba(0,0,0,0.1);
         }
-        .merch-single img { height: 220px; width: auto; }
+        .merch-single img { height: 250px; width: auto; }
 
-        .merch-stack { position: relative; height: 220px; aspect-ratio: 3 / 4; margin-bottom: 10px; }
+        .merch-stack { position: relative; height: 250px; aspect-ratio: 3 / 4; margin-bottom: 10px; }
         .merch-stack img {
             position: absolute; top: 0; left: 0; width: 94%; height: 94%; object-fit: cover;
         }
         .merch-stack .stack-back { transform: translate(8px, 8px) rotate(-1.5deg); z-index: 1; }
         .merch-stack .stack-front { transform: translate(0, 0) rotate(1deg); z-index: 2; }
+        /* 叠在制品1略缩图顶部的透明 logo */
+        .merch-stack .stack-logo {
+            z-index: 3; top: 6%; left: 50%;
+            width: 86%; height: auto; object-fit: contain;
+            transform: translateX(-50%) rotate(-2deg);
+            border: none; background: transparent;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.35));
+            box-shadow: none; pointer-events: none;
+        }
 
         .merch-title { margin-top: 0.8rem; font-size: 0.95rem; font-weight: bold; text-align: center; }
 
@@ -263,14 +274,25 @@
         }
         .close-modal-btn:hover { transform: scale(1.1); color: #666; }
 
-        /* 制品放大浮层内容：复用简历弹窗的毛玻璃背景，多张图纵向排列可滚动查看 */
+        /* 制品放大浮层内容：复用简历弹窗的毛玻璃背景，一行两张可滚动查看 */
         .image-modal-content {
-            position: relative; max-width: 700px; width: 90%; margin: auto;
-            display: flex; flex-direction: column; gap: 1.5rem;
+            position: relative; z-index: 1;
+            max-width: 840px; width: 90%; margin: auto;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: start;
         }
         .image-modal-content img {
             width: 100%; height: auto; display: block;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15); background: #fff;
+        }
+        /* DVD 弹跳式漂浮 logo 层，衬在图片背后 */
+        .image-modal-float {
+            position: fixed; inset: 0; z-index: 0;
+            overflow: hidden; pointer-events: none;
+        }
+        .image-modal-float img {
+            position: absolute; top: 0; left: 0;
+            width: 320px; height: auto; opacity: 0.7;
+            will-change: transform;
         }
         /* ==================================================== */
         /* 中英文切换滑块 */
@@ -319,8 +341,8 @@
             .project-media { order: -1; }
             .portfolio-row { gap: 1rem; margin-bottom: 2rem; }
             .merch-strip-track { gap: 1.5rem; }
-            .merch-single img { height: 150px; }
-            .merch-stack { height: 150px; margin-bottom: 8px; }
+            .merch-single img { height: 180px; }
+            .merch-stack { height: 180px; margin-bottom: 8px; }
             .illust-pile-stack { height: 150px; margin-bottom: 8px; }
             .illust-wall { column-count: 2; column-gap: 0.6rem; }
             .illust-wall img { margin-bottom: 0.6rem; }
@@ -340,7 +362,8 @@
             .resume-modal { padding: 4rem 0 2rem 0; align-items: flex-start; } /* 顶部留出X按钮空间 */
             .close-modal-btn { top: 10px; right: 20px; font-size: 2.5rem; }
             .resume-modal-content { width: 95%; margin: 0 auto; }
-            .image-modal-content { width: 95%; gap: 1rem; }
+            .image-modal-content { width: 95%; gap: 0.6rem; }
+            .image-modal-float img { width: 190px; }
         }
     </style>
 </head>
@@ -457,7 +480,7 @@
                         </div>
                         <div class="project-media">
                             <a href="project-03.html" class="media-link">
-                                <img src="assets/cover03.png" alt="FragileWE Cover">
+                                <video src="assets/26.mp4" autoplay muted loop playsinline poster="assets/cover03.png"></video>
                             </a>
                         </div>
                     </article>
@@ -475,7 +498,7 @@
                         </div>
                         <div class="project-media">
                             <a href="project-04.html" class="media-link">
-                                <img src="assets/51.png" alt="Digital Oracle Cover">
+                                <video src="assets/好的.mp4" autoplay muted loop playsinline poster="assets/51.png"></video>
                             </a>
                         </div>
                     </article>
@@ -550,7 +573,7 @@
                         </div>
                         <div class="project-media">
                             <a href="project-05.html" class="media-link">
-                                <img src="assets/cover04.png" alt="Market App Cover">
+                                <video src="assets/38.mp4" autoplay muted loop playsinline poster="assets/cover04.png"></video>
                             </a>
                         </div>
                     </article>
@@ -581,10 +604,11 @@
                     <div class="portfolio-row">
                         <div class="merch-strip" id="merchStrip">
                             <div class="merch-strip-track" id="merchStripTrack">
-                                <div class="merch-item" data-images='["assets/merch-neuralcorruption-cover-full.jpg","assets/merch-neuralcorruption-detail-full.jpg"]'>
+                                <div class="merch-item" data-images='["assets/merch-nc-poster.jpg","assets/merch-neuralcorruption-cover-full.jpg","assets/merch-neuralcorruption-detail-full.jpg","assets/merch-nc-xray.png","assets/merch-nc-photo.jpg","assets/merch-nc-photo2.jpg"]' data-float='["assets/nc-logo-1.png","assets/nc-logo-2.png","assets/nc-logo-1.png","assets/nc-logo-2.png"]'>
                                     <div class="merch-stack">
                                         <img class="stack-back" src="assets/merch-neuralcorruption-detail.jpg" alt="Neural Corruption #039 item breakdown and pricing">
                                         <img class="stack-front" src="assets/merch-neuralcorruption-cover.jpg" alt="Neural Corruption #039 preview">
+                                        <img class="stack-logo" src="assets/nc-logo-1.png" alt="">
                                     </div>
                                     <div class="merch-title">Neural Corruption #039</div>
                                 </div>
@@ -706,6 +730,7 @@
     </div>
 
     <div id="image-modal" class="resume-modal">
+        <div class="image-modal-float" id="image-modal-float"></div>
         <span class="close-modal-btn" onclick="closeImageModal()">&times;</span>
         <div class="image-modal-content" id="image-modal-content" onclick="event.stopPropagation()"></div>
     </div>
@@ -737,16 +762,71 @@
             }
         });
 
-        // --- 制品/插画放大浮层控制逻辑：点击卡片，大图浮出，背景虚化，多张图可纵向滚动查看 ---
-        function openImageModal(images) {
+        // --- 制品/插画放大浮层控制逻辑：点击卡片，大图浮出，背景虚化，一行两张可滚动查看 ---
+        // floatImages 存在时，会在图片背后放几张 logo，像 DVD 屏保那样撞边反弹漂浮
+        let floatRafId = null;
+
+        function startFloat(floatImages) {
+            const layer = document.getElementById('image-modal-float');
+            if (floatRafId) { cancelAnimationFrame(floatRafId); floatRafId = null; }
+            layer.innerHTML = '';
+            if (!floatImages || !floatImages.length) return;
+
+            const items = floatImages.map(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                layer.appendChild(img);
+                return { el: img, x: 0, y: 0, vx: 0, vy: 0, ready: false };
+            });
+
+            function place() {
+                const W = layer.clientWidth, H = layer.clientHeight;
+                items.forEach(it => {
+                    const w = it.el.offsetWidth || 170;
+                    const h = it.el.offsetHeight || 80;
+                    it.x = Math.random() * Math.max(1, W - w);
+                    it.y = Math.random() * Math.max(1, H - h);
+                    const speed = 1.8 + Math.random() * 1.0;
+                    const ang = Math.random() * Math.PI * 2;
+                    it.vx = Math.cos(ang) * speed;
+                    it.vy = Math.sin(ang) * speed;
+                    it.ready = true;
+                });
+            }
+            // 图片尺寸就绪后再定位（缓存命中时也立即尝试一次）
+            place();
+            Promise.all(items.map(it => it.el.complete ? Promise.resolve()
+                : new Promise(r => { it.el.onload = r; it.el.onerror = r; }))).then(place);
+
+            function tick() {
+                const W = layer.clientWidth, H = layer.clientHeight;
+                items.forEach(it => {
+                    if (!it.ready) return;
+                    const w = it.el.offsetWidth, h = it.el.offsetHeight;
+                    it.x += it.vx; it.y += it.vy;
+                    if (it.x <= 0) { it.x = 0; it.vx = Math.abs(it.vx); }
+                    else if (it.x + w >= W) { it.x = W - w; it.vx = -Math.abs(it.vx); }
+                    if (it.y <= 0) { it.y = 0; it.vy = Math.abs(it.vy); }
+                    else if (it.y + h >= H) { it.y = H - h; it.vy = -Math.abs(it.vy); }
+                    it.el.style.transform = `translate(${it.x}px, ${it.y}px)`;
+                });
+                floatRafId = requestAnimationFrame(tick);
+            }
+            floatRafId = requestAnimationFrame(tick);
+        }
+
+        function openImageModal(images, floatImages) {
             const content = document.getElementById('image-modal-content');
             content.innerHTML = images.map(src => `<img src="${src}" alt="">`).join('');
+            startFloat(floatImages);
             document.getElementById('image-modal').classList.add('show');
             updateBodyScrollLock();
         }
 
         function closeImageModal() {
             document.getElementById('image-modal').classList.remove('show');
+            if (floatRafId) { cancelAnimationFrame(floatRafId); floatRafId = null; }
+            document.getElementById('image-modal-float').innerHTML = '';
             updateBodyScrollLock();
         }
 
@@ -758,7 +838,8 @@
 
         document.querySelectorAll('.merch-item[data-images], .illust-wall img[data-images]').forEach(item => {
             item.addEventListener('click', () => {
-                openImageModal(JSON.parse(item.dataset.images));
+                const floatImages = item.dataset.float ? JSON.parse(item.dataset.float) : null;
+                openImageModal(JSON.parse(item.dataset.images), floatImages);
             });
         });
 
