@@ -48,13 +48,26 @@ async function handleChat(request, env) {
 
     const messages = [{ role: "system", content: SYSTEM_PROMPT }, ...recent];
 
-    const result = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-        messages,
-        max_tokens: 400,
-        temperature: 0.6,
-    });
+    // 依次尝试几个现役模型，哪个可用就用哪个（防止个别模型被下架导致整体失效）
+    const MODELS = [
+        "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+        "@cf/meta/llama-3.2-3b-instruct",
+        "@cf/meta/llama-3.1-8b-instruct-fast",
+        "@cf/meta/llama-3-8b-instruct",
+    ];
 
-    return Response.json({ reply: (result.response || "").trim() });
+    let lastErr = "no model available";
+    for (const model of MODELS) {
+        try {
+            const result = await env.AI.run(model, { messages, max_tokens: 400, temperature: 0.6 });
+            const reply = (result.response || "").trim();
+            if (reply) return Response.json({ reply });
+            lastErr = "empty reply from " + model;
+        } catch (e) {
+            lastErr = String((e && e.message) || e);
+        }
+    }
+    return Response.json({ error: "server_error", detail: lastErr }, { status: 500 });
 }
 
 export default {
