@@ -27,12 +27,23 @@ const SYSTEM_PROMPT = `你是嵌入在设计师宋佳韵（Jiayun Song）作品�
 - 插画主页：小红书 Pocar1
 - 关于合作、约稿、实习/工作机会，都可以通过邮箱联系。`;
 
+// 允许网站（部署在 Vercel）跨域调用本 worker
+const CORS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+};
+
+function json(obj, status = 200) {
+    return new Response(JSON.stringify(obj), {
+        status,
+        headers: { "Content-Type": "application/json", ...CORS },
+    });
+}
+
 async function handleChat(request, env) {
     if (!env.AI) {
-        return Response.json(
-            { error: "AI binding 未配置" },
-            { status: 500 }
-        );
+        return json({ error: "AI binding 未配置" }, 500);
     }
     const body = await request.json().catch(() => ({}));
     const history = Array.isArray(body.messages) ? body.messages : [];
@@ -43,7 +54,7 @@ async function handleChat(request, env) {
         .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }));
 
     if (!recent.length) {
-        return Response.json({ error: "empty" }, { status: 400 });
+        return json({ error: "empty" }, 400);
     }
 
     const messages = [{ role: "system", content: SYSTEM_PROMPT }, ...recent];
@@ -61,26 +72,29 @@ async function handleChat(request, env) {
         try {
             const result = await env.AI.run(model, { messages, max_tokens: 400, temperature: 0.6 });
             const reply = (result.response || "").trim();
-            if (reply) return Response.json({ reply });
+            if (reply) return json({ reply });
             lastErr = "empty reply from " + model;
         } catch (e) {
             lastErr = String((e && e.message) || e);
         }
     }
-    return Response.json({ error: "server_error", detail: lastErr }, { status: 500 });
+    return json({ error: "server_error", detail: lastErr }, 500);
 }
 
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
         if (url.pathname === "/api/chat") {
+            if (request.method === "OPTIONS") {
+                return new Response(null, { status: 204, headers: CORS });
+            }
             if (request.method !== "POST") {
-                return new Response("Method Not Allowed", { status: 405 });
+                return new Response("Method Not Allowed", { status: 405, headers: CORS });
             }
             try {
                 return await handleChat(request, env);
             } catch (err) {
-                return Response.json({ error: "server_error", detail: String((err && err.message) || err) }, { status: 500 });
+                return json({ error: "server_error", detail: String((err && err.message) || err) }, 500);
             }
         }
         // 其它请求交给静态资源
