@@ -67,7 +67,7 @@ export default {
             try {
                 return await handleChat(request, env);
             } catch (err) {
-                return Response.json({ error: "server_error" }, { status: 500 });
+                return Response.json({ error: "server_error", detail: String((err && err.message) || err) }, { status: 500 });
             }
         }
         // 其它请求交给静态资源
