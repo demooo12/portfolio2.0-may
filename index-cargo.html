@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jiayun Song — Portfolio (v3 预览)</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --fg: #111; --mut: #999; --line: #e6e6e6; --bg: #f6f5f2; }
+    html { -webkit-font-smoothing: antialiased; }
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+        background: var(--bg); color: var(--fg); line-height: 1.5;
+        padding: clamp(1.6rem, 5vw, 4.5rem);
+        max-width: 1200px; margin: 0 auto;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- 顶部 ---------- */
+    .masthead { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; margin-bottom: clamp(3rem, 9vw, 7rem); }
+    .brand .name { font-size: clamp(1.5rem, 3.2vw, 2.4rem); font-weight: 600; letter-spacing: -0.01em; }
+    .brand .tag {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mut);
+        margin-top: 0.5rem;
+    }
+    .brand .intro { font-size: 0.98rem; color: #555; max-width: 34ch; margin-top: 1.1rem; }
+
+    .top-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; flex-shrink: 0; }
+    .top-nav { display: flex; gap: 1.1rem; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .top-nav a { color: var(--mut); transition: color 0.2s; }
+    .top-nav a:hover { color: var(--fg); }
+    /* 中英切换 */
+    .lang { display: inline-flex; border: 1px solid var(--fg); border-radius: 40px; overflow: hidden; font-family: ui-monospace, Menlo, monospace; font-size: 0.68rem; }
+    .lang button { border: none; background: transparent; padding: 4px 11px; cursor: pointer; color: var(--mut); letter-spacing: 0.08em; }
+    .lang button.on { background: var(--fg); color: #fff; }
+
+    /* ---------- 索引列表 ---------- */
+    .cat { margin: clamp(2.4rem, 6vw, 4rem) 0 0.3rem; }
+    .cat-label {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mut);
+        padding-bottom: 0.6rem; border-bottom: 1px solid var(--fg);
+        display: block;
+    }
+    .row {
+        display: flex; align-items: baseline; justify-content: space-between; gap: 2rem;
+        padding: 0.95rem 0.2rem; border-bottom: 1px solid var(--line);
+        position: relative; transition: padding-left 0.25s ease, color 0.2s ease;
+    }
+    .row:hover { padding-left: 1.1rem; }
+    .row .t { font-size: clamp(1.35rem, 3vw, 2.1rem); font-weight: 500; letter-spacing: -0.01em; line-height: 1.15; }
+    .row .m {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mut);
+        white-space: nowrap; flex-shrink: 0; text-align: right;
+    }
+    .row .award { color: #b8860b; }
+    /* hover 时同分类其它行变淡，聚焦当前行 */
+    .list:hover .row:not(:hover) .t { color: #bcbcbc; transition: color 0.2s; }
+
+    /* ---------- 跟随光标的预览图 ---------- */
+    .preview {
+        position: fixed; top: 0; left: 0; z-index: 50; pointer-events: none;
+        width: 300px; max-width: 40vw; opacity: 0; transform: translate(-50%, -50%) scale(0.96);
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.18); background: #fff;
+    }
+    .preview.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .preview img, .preview video { width: 100%; height: auto; display: block; }
+
+    /* ---------- 底部信息 ---------- */
+    footer { margin-top: clamp(4rem, 10vw, 8rem); padding-top: 1.4rem; border-top: 1px solid var(--fg);
+        display: flex; flex-wrap: wrap; gap: 0.4rem 2.5rem; font-size: 0.9rem; color: #555; }
+    footer a { border-bottom: 1px solid #ccc; }
+    footer a:hover { border-color: var(--fg); color: var(--fg); }
+
+    /* 触屏设备不显示跟随预览（改为不做 hover 淡化） */
+    @media (hover: none) {
+        .list:hover .row:not(:hover) .t { color: inherit; }
+        .preview { display: none; }
+    }
+    @media (max-width: 640px) {
+        .masthead { flex-direction: column; }
+        .top-right { align-items: flex-start; }
+        .row { flex-direction: column; gap: 0.35rem; padding: 0.8rem 0.2rem; }
+        .row .m { text-align: left; }
+        .row:hover { padding-left: 0.2rem; }
+    }
+
+    /* ==================== AI 小助手气泡 ==================== */
+    .chat-fab { position: fixed; right: 20px; bottom: 20px; z-index: 9998; display: flex; align-items: center; gap: 8px;
+        padding: 11px 17px; border-radius: 50px; border: 1px solid #111; background: #111; color: #fff;
+        font-family: monospace; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;
+        cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: transform 0.2s; }
+    .chat-fab:hover { transform: translateY(-2px); }
+    .chat-fab.hidden { opacity: 0; pointer-events: none; }
+    .chat-panel { position: fixed; right: 20px; bottom: 20px; z-index: 9999; width: 340px; max-width: calc(100vw - 32px);
+        height: 460px; max-height: calc(100vh - 44px); display: none; flex-direction: column; background: #f4f4f4;
+        border: 1px solid #111; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .chat-panel.show { display: flex; }
+    .chat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #111; background: #111; color: #fff; }
+    .chat-header .title { font-family: monospace; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; }
+    .chat-close { cursor: pointer; font-size: 1.4rem; line-height: 1; background: none; border: none; color: #fff; }
+    .chat-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .chat-msg { max-width: 85%; padding: 8px 12px; font-size: 0.9rem; line-height: 1.4; border-radius: 14px; white-space: pre-wrap; word-break: break-word; }
+    .chat-msg.bot { align-self: flex-start; background: #fff; border: 1px solid #ddd; border-bottom-left-radius: 4px; }
+    .chat-msg.user { align-self: flex-end; background: #111; color: #fff; border-bottom-right-radius: 4px; }
+    .chat-msg.typing { color: #999; font-style: italic; }
+    .chat-input-row { display: flex; gap: 8px; padding: 10px; border-top: 1px solid #111; }
+    .chat-input-row input { flex: 1; min-width: 0; padding: 9px 12px; border: 1px solid #111; border-radius: 50px; font-size: 0.9rem; font-family: inherit; background: #fff; outline: none; }
+    .chat-send { flex: 0 0 auto; padding: 0 16px; border: 1px solid #111; border-radius: 50px; background: #111; color: #fff; font-family: monospace; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+    .chat-send:disabled { opacity: 0.4; }
+    @media (max-width: 480px) { .chat-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); height: calc(100vh - 80px); } }
+</style>
+</head>
+<body>
+
+    <header class="masthead">
+        <div class="brand">
+            <div class="name" data-en="Jiayun Song" data-zh="宋佳韵">宋佳韵</div>
+            <div class="tag" data-en="Graphic Designer & Illustrator" data-zh="平面设计师 / 插画师">平面设计师 / 插画师</div>
+            <p class="intro" data-en="Multidisciplinary designer exploring interactive technology, speculative narrative and visual design." data-zh="多学科设计师，游走于交互技术、推测性叙事与视觉设计之间。">多学科设计师，游走于交互技术、推测性叙事与视觉设计之间。</p>
+        </div>
+        <div class="top-right">
+            <div class="lang" id="lang">
+                <button data-lang="zh" class="on">中</button>
+                <button data-lang="en">EN</button>
+            </div>
+            <nav class="top-nav">
+                <a href="#works" data-en="Works" data-zh="作品">作品</a>
+                <a href="#info" data-en="Info" data-zh="简介">简介</a>
+                <a href="index.html" data-en="Resume ↗" data-zh="简历 ↗">简历 ↗</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="works">
+        <!-- 交互与游戏 -->
+        <section class="cat">
+            <span class="cat-label" data-en="Interactive & Games" data-zh="交互与游戏">交互与游戏</span>
+        </section>
+        <div class="list">
+            <a class="row" href="project-01.html" data-preview="assets/cover01.png">
+                <span class="t">MarriagEmArkeT</span>
+                <span class="m" data-en="Solo · Interactive Web & Game" data-zh="个人 · 交互网页与游戏">个人 · 交互网页与游戏</span>
+            </a>
+            <a class="row" href="project-02.html" data-preview="assets/cover02.png">
+                <span class="t">/imagine:salmon</span>
+                <span class="m" data-en="Team of 3 · Motion Capture Game" data-zh="三人 · 动捕游戏">三人 · 动捕游戏</span>
+            </a>
+            <a class="row" href="project-03.html" data-preview="assets/cover03.png">
+                <span class="t">FragileWE</span>
+                <span class="m" data-en="Solo · Multiplayer Gesture Art" data-zh="个人 · 多人手势交互">个人 · 多人手势交互</span>
+            </a>
+            <a class="row" href="project-04.html" data-preview="assets/51.png">
+                <span class="t" data-en="Actually I've already decided…" data-zh="其实我已经决定了…">其实我已经决定了…</span>
+                <span class="m" data-en="Solo · Webcam Oracle" data-zh="个人 · 摄像头神谕">个人 · 摄像头神谕</span>
+            </a>
+            <a class="row" href="project-06.html" data-preview="assets/cover05.png">
+                <span class="t" data-en="It's so quiet…" data-zh="好安静，我以为我们永远有话说">好安静，我以为我们永远有话说</span>
+                <span class="m" data-en="Team of 2 · Interactive Narrative" data-zh="两人 · 交互叙事">两人 · 交互叙事</span>
+            </a>
+        </div>
+
+        <!-- 品牌 / 书籍 / 平面 -->
+        <section class="cat">
+            <span class="cat-label" data-en="Brand, Book & Graphic" data-zh="品牌 / 书籍 / 平面">品牌 / 书籍 / 平面</span>
+        </section>
+        <div class="list">
+            <a class="row" href="project-wks.html" data-preview="assets/wks.png">
+                <span class="t" data-en="Wukuaishi Community Rebranding" data-zh="五块石社区品牌更新">五块石社区品牌更新</span>
+                <span class="m"><span data-en="Solo · Brand & Event" data-zh="个人 · 品牌与活动">个人 · 品牌与活动</span> · <span class="award" data-en="Award" data-zh="获奖">获奖</span></span>
+            </a>
+            <a class="row" href="project-asuwish.html" data-preview="assets/auw.png">
+                <span class="t">AS U WISH</span>
+                <span class="m" data-en="Solo · Graphic & Editorial" data-zh="个人 · 平面与书籍">个人 · 平面与书籍</span>
+            </a>
+            <a class="row" href="project-05.html" data-preview="assets/cover04.png">
+                <span class="t" data-en="Market App" data-zh="玉林综合市场 App">玉林综合市场 App</span>
+                <span class="m" data-en="Team of 2 · UI/UX & AR" data-zh="两人 · UI/UX 与 AR">两人 · UI/UX 与 AR</span>
+            </a>
+            <a class="row" href="project-bwg.html" data-preview="assets/mus.png">
+                <span class="t" data-en="REBORN: Sichuan University Museum" data-zh="新生：川大博物馆视觉更新">新生：川大博物馆视觉更新</span>
+                <span class="m"><span data-en="Team of 2 · VI System" data-zh="两人 · 视觉系统">两人 · 视觉系统</span> · <span class="award" data-en="Award" data-zh="获奖">获奖</span></span>
+            </a>
+        </div>
+
+        <!-- 插画 + 制品 -->
+        <section class="cat">
+            <span class="cat-label" data-en="Illustration & Merch" data-zh="插画 + 制品">插画 + 制品</span>
+        </section>
+        <div class="list">
+            <a class="row" href="index.html#works" data-preview="assets/merch-neuralcorruption-cover.jpg">
+                <span class="t">Neural Corruption #039</span>
+                <span class="m" data-en="Merch Set" data-zh="制品套装">制品套装</span>
+            </a>
+            <a class="row" href="index.html#works" data-preview="assets/merch-a1152.jpg">
+                <span class="t" data-en="A1152 New Year Set" data-zh="A1152 新年套装">A1152 新年套装</span>
+                <span class="m" data-en="Merch Set" data-zh="制品套装">制品套装</span>
+            </a>
+            <a class="row" href="index.html#works" data-preview="assets/illust/illust-11.jpg">
+                <span class="t" data-en="Illustration Archive" data-zh="插画作品集">插画作品集</span>
+                <span class="m" data-en="49 works" data-zh="49 幅">49 幅</span>
+            </a>
+        </div>
+    </main>
+
+    <footer id="info">
+        <span data-en="Email" data-zh="邮箱">邮箱</span>
+        <a href="mailto:songjiayun6@outlook.com">songjiayun6@outlook.com</a>
+        <a href="https://xhslink.com/m/6oNL1ztmssr" target="_blank" data-en="Rednote · Pocar1" data-zh="小红书 · Pocar1">小红书 · Pocar1</a>
+        <span data-en="MA Computational Arts, Goldsmiths" data-zh="金史密斯学院 计算艺术硕士">金史密斯学院 计算艺术硕士</span>
+    </footer>
+
+    <!-- 跟随光标的预览图 -->
+    <div class="preview" id="preview"><img id="previewImg" src="" alt=""></div>
+
+    <!-- AI 小助手 -->
+    <button type="button" class="chat-fab" id="chatFab" data-en="Ask me ✦" data-zh="问问我 ✦">问问我 ✦</button>
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <span class="title" data-en="Ask about my work" data-zh="关于我的作品">关于我的作品</span>
+            <button type="button" class="chat-close" id="chatClose">&times;</button>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input-row">
+            <input type="text" id="chatInput" data-en-placeholder="Type a question…" data-zh-placeholder="输入你的问题…" placeholder="输入你的问题…" autocomplete="off">
+            <button type="button" class="chat-send" id="chatSend" data-en="Send" data-zh="发送">发送</button>
+        </div>
+    </div>
+
+<script>
+    // ---------- 跟随光标的预览 ----------
+    (function () {
+        const preview = document.getElementById('preview');
+        const img = document.getElementById('previewImg');
+        let raf = null, tx = 0, ty = 0;
+        document.querySelectorAll('.row[data-preview]').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                img.src = row.dataset.preview;
+                preview.classList.add('show');
+            });
+            row.addEventListener('mouseleave', () => preview.classList.remove('show'));
+        });
+        window.addEventListener('mousemove', e => {
+            tx = e.clientX; ty = e.clientY;
+            if (!raf) raf = requestAnimationFrame(() => {
+                preview.style.left = tx + 'px';
+                preview.style.top = ty + 'px';
+                raf = null;
+            });
+        });
+    })();
+
+    // ---------- 中英切换 ----------
+    (function () {
+        const langBox = document.getElementById('lang');
+        function apply(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const v = el.getAttribute('data-' + lang);
+                if (v) el.innerHTML = v;
+            });
+            document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+                const v = el.getAttribute('data-' + lang + '-placeholder');
+                if (v) el.setAttribute('placeholder', v);
+            });
+            langBox.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+            localStorage.setItem('portfolio-lang', lang);
+        }
+        langBox.addEventListener('click', e => { if (e.target.dataset.lang) apply(e.target.dataset.lang); });
+        apply(localStorage.getItem('portfolio-lang') || 'zh');
+    })();
+
+    // ---------- AI 小助手（直连 Cloudflare worker）----------
+    (function () {
+        const CHAT_ENDPOINT = 'https://songjiayun.1187747078.workers.dev/api/chat';
+        const fab = document.getElementById('chatFab'), panel = document.getElementById('chatPanel');
+        const bodyEl = document.getElementById('chatBody'), input = document.getElementById('chatInput'), sendBtn = document.getElementById('chatSend');
+        const history = []; let greeted = false, sending = false;
+        const isZh = () => document.documentElement.lang !== 'en';
+        function addMsg(t, who) { const el = document.createElement('div'); el.className = 'chat-msg ' + who; el.textContent = t; bodyEl.appendChild(el); bodyEl.scrollTop = bodyEl.scrollHeight; return el; }
+        function open() {
+            panel.classList.add('show'); fab.classList.add('hidden');
+            if (!greeted) { addMsg(isZh() ? '你好！我是宋佳韵作品集的小助手，可以问我关于她的项目、设计风格或合作方式 :)' : "Hi! I'm Jiayun's portfolio assistant — ask about her projects, style, or how to reach her :)", 'bot'); greeted = true; }
+            setTimeout(() => input.focus(), 200);
+        }
+        function close() { panel.classList.remove('show'); fab.classList.remove('hidden'); }
+        async function send() {
+            const text = input.value.trim(); if (!text || sending) return;
+            sending = true; sendBtn.disabled = true; input.value = '';
+            addMsg(text, 'user'); history.push({ role: 'user', content: text });
+            const typing = addMsg(isZh() ? '正在输入…' : 'Typing…', 'bot'); typing.classList.add('typing');
+            try {
+                const r = await fetch(CHAT_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
+                const d = await r.json().catch(() => ({})); typing.remove();
+                if (r.ok && d.reply) { addMsg(d.reply, 'bot'); history.push({ role: 'assistant', content: d.reply }); }
+                else addMsg(isZh() ? '抱歉，我暂时无法回答，可邮件联系 songjiayun6@outlook.com' : 'Sorry, I could not answer. Email songjiayun6@outlook.com', 'bot');
+            } catch (e) { typing.remove(); addMsg(isZh() ? '连接失败，请稍后再试' : 'Connection failed, please try later', 'bot'); }
+            finally { sending = false; sendBtn.disabled = false; input.focus(); }
+        }
+        fab.addEventListener('click', open); document.getElementById('chatClose').addEventListener('click', close);
+        sendBtn.addEventListener('click', send); input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+    })();
+</script>
+</body>
+</html>
