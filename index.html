@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+        html { font-size: 15px; }
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             background-color: #f4f4f4;
@@ -49,7 +50,7 @@
 
         /* 巨大的自我介绍 (Hero Section) */
         .hero { margin-bottom: 5rem; max-width: 1200px; }
-        .hero h1 { font-size: clamp(3rem, 6vw, 6rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.05; }
+        .hero h1 { font-size: clamp(2.1rem, 4.4vw, 4.1rem); font-weight: 400; letter-spacing: -0.03em; line-height: 1.05; }
 
         /* Hero 文本末尾的 Resume 按钮样式 */
         .hero-resume-btn {
@@ -84,7 +85,7 @@
             display: flex; width: max-content; gap: 1.5rem; will-change: transform;
         }
         .style-strip-track img {
-            height: 260px; width: auto; display: block;
+            height: 290px; width: auto; display: block;
             border: 1px solid #111; background: #fff;
         }
         .style-strip-arrow {
@@ -136,7 +137,7 @@
         .tag-team { color: #111; font-weight: bold; border-bottom: 1px solid #111; }
         .tag-award { color: #b8860b; font-weight: bold; border: 1px solid #b8860b; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
 
-        .project-title { font-size: 2.5rem; margin-bottom: 1rem; font-weight: bold; line-height: 1.1; }
+        .project-title { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 400; line-height: 1.1; }
         .project-title a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
         .project-title a:hover { color: #666; }
         
@@ -225,7 +226,7 @@
         .info-section {
             margin-top: 8rem; padding-top: 4rem; border-top: 1px solid #111; margin-bottom: 5rem;
         }
-        .info-heading { font-size: 2.5rem; font-weight: bold; margin-bottom: 2rem; text-transform: uppercase; }
+        .info-heading { font-size: 2.5rem; font-weight: 400; margin-bottom: 2rem; text-transform: uppercase; }
         .info-content { font-size: 1.2rem; line-height: 1.5; color: #333; max-width: 800px; margin-bottom: 3rem; }
         .info-content p { margin-bottom: 1rem; }
         
@@ -355,7 +356,7 @@
 
             .style-strip { margin-bottom: 3rem; }
             .style-strip-track { gap: 1rem; }
-            .style-strip-track img { height: 150px; }
+            .style-strip-track img { height: 170px; }
             .style-strip-arrow { width: 36px; height: 36px; font-size: 1.1rem; }
 
             /* 手机端弹窗样式微调 */
@@ -456,6 +457,7 @@
                 <div class="style-strip-track" id="styleStripTrack">
                     <img src="assets/style1.jpg" alt="Design style 1">
                     <img src="assets/style11.jpg" alt="Design style 11">
+                    <img src="assets/fish.jpg" alt="Design style fish">
                     <img src="assets/style2.jpg" alt="Design style 2">
                     <img src="assets/style3.jpg" alt="Design style 3">
                     <img src="assets/style4.jpg" alt="Design style 4">
@@ -467,6 +469,7 @@
                     <img src="assets/style10.jpg" alt="Design style 10">
                     <img src="assets/style1.jpg" alt="Design style 1" aria-hidden="true">
                     <img src="assets/style11.jpg" alt="Design style 11" aria-hidden="true">
+                    <img src="assets/fish.jpg" alt="Design style fish" aria-hidden="true">
                     <img src="assets/style2.jpg" alt="Design style 2" aria-hidden="true">
                     <img src="assets/style3.jpg" alt="Design style 3" aria-hidden="true">
                     <img src="assets/style4.jpg" alt="Design style 4" aria-hidden="true">
@@ -702,7 +705,7 @@
                 <h2 class="info-heading" data-en="Info" data-zh="个人简介">Info</h2>
                 <div class="info-content">
                     <p data-en="Currently studying MA Computational Arts at Goldsmiths." data-zh="目前就读于伦敦大学金史密斯学院，攻读计算艺术硕士学位 (MA Computational Arts)。">Currently studying MA Computational Arts at Goldsmiths.</p>
-                    <p data-en="currently hold a Student Visa and am fully eligible to transition to the Graduate Route visa (PSW) independently upon graduation in Sept 2026, which will grant me full work authorization through 2028 without the need for sponsorship." data-zh="目前持有英国学生签证，预计 2026 年 9 月完成学业，2027 年 2 月拿到毕业证，并完全有资格在毕业后自主转换为毕业生签证 (PSW)，这将赋予我直到 2028 年的完全工作许可，无需雇主担保。">currently hold a Student Visa and am fully eligible to transition to the Graduate Route visa (PSW) independently upon graduation in Sept 2026, which will grant me full work authorization through 2028 without the need for sponsorship.</p>
+                    <p data-en="currently hold a Student Visa and am fully eligible to transition to the Graduate Route visa (PSW) independently upon graduation in Sept 2026, which will grant me full work authorization through 2028 without the need for sponsorship." data-zh="目前持有英国学生签证，预计 2026 年 9 月完成学业，2027 年 2 月拿到毕业证。">currently hold a Student Visa and am fully eligible to transition to the Graduate Route visa (PSW) independently upon graduation in Sept 2026, which will grant me full work authorization through 2028 without the need for sponsorship.</p>
                 </div>
                 
                 <ul class="contact-list">
