@@ -269,5 +269,21 @@
         });
     </script>
 
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
+
 </body>
 </html>

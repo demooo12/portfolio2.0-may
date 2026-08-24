@@ -269,7 +269,7 @@
                     <div class="editorial-text">
                         <p data-en="<strong>General Content:</strong> Including daily activities, digital recipes, and real-time navigation components." data-zh="<strong>常规内容：</strong>包括日常活动、数字食谱以及实时导航组件。"><strong>General Content:</strong> Including daily activities, digital recipes, and real-time navigation components.</p>
                     </div>
-                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><video src="assets/39.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><video src="assets/39.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
 
                     <div class="side-by-side-row ratio-3-7" style="margin-bottom: 4rem;">
                         <div class="text-block">
@@ -281,12 +281,12 @@
                         </div>
                     </div>
 
-                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><video src="assets/38.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><video src="assets/38.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
 
                     <div class="editorial-text">
                         <p data-en="<strong>The AR Food Identifier:</strong> Pointing smartphone cameras at raw goods to overlay digital data cards with origin details, safety certifications, and storage tips." data-zh="<strong>AR 食材识别器：</strong>将智能手机摄像头对准生鲜食材，即可在屏幕上叠加数字数据卡，显示产地详情、安全认证以及储存建议。"><strong>The AR Food Identifier:</strong> Pointing smartphone cameras at raw goods to overlay digital data cards with origin details, safety certifications, and storage tips.</p>
                     </div>
-                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><video src="assets/40.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
+                    <div class="inline-image-wrap seventy" style="margin-bottom: 4rem;"><video src="assets/40.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
 
                     <div class="editorial-text">
                         <p data-en="<strong>Redefining User Flow:</strong> Successfully managing the market's dynamic flow by catering to both elderly residents and young &quot;city-walkers,&quot; enhancing operational efficiency and community participation." data-zh="<strong>重新定义用户动线：</strong>通过同时满足老年居民和年轻“城市漫游者 (city-walkers)”的需求，成功管理了市场的动态人流，从而提高了运营效率和社区参与度。"><strong>Redefining User Flow:</strong> Successfully managing the market's dynamic flow by catering to both elderly residents and young "city-walkers," enhancing operational efficiency and community participation.</p>
@@ -341,6 +341,22 @@
             switchLang(savedLang);
         });
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>

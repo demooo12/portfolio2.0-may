@@ -542,7 +542,7 @@
                         </div>
                         <div class="project-media">
                             <a href="project-03.html" class="media-link">
-                                <video src="assets/26.mp4" autoplay muted loop playsinline poster="assets/cover03.png"></video>
+                                <video src="assets/26.mp4" muted loop playsinline poster="assets/cover03.png" preload="none"></video>
                             </a>
                         </div>
                     </article>
@@ -560,7 +560,7 @@
                         </div>
                         <div class="project-media">
                             <a href="project-04.html" class="media-link">
-                                <video src="assets/好的.mp4" autoplay muted loop playsinline poster="assets/51.png"></video>
+                                <video src="assets/好的.mp4" muted loop playsinline poster="assets/51.png" preload="none"></video>
                             </a>
                         </div>
                     </article>
@@ -635,7 +635,7 @@
                         </div>
                         <div class="project-media">
                             <a href="project-05.html" class="media-link">
-                                <video src="assets/38.mp4" autoplay muted loop playsinline poster="assets/cover04.png"></video>
+                                <video src="assets/38.mp4" muted loop playsinline poster="assets/cover04.png" preload="none"></video>
                             </a>
                         </div>
                     </article>
@@ -1241,6 +1241,22 @@
             input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
         })();
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>

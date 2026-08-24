@@ -272,7 +272,7 @@
                 
                 <div class="gallery-text" data-en="Left & Right Hand Operation" data-zh="左右手操作演示">Left & Right Hand Operation</div>
                 <div class="gallery-item full-width">
-                    <video src="assets/26.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    <video src="assets/26.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                 </div>
 
                 <div class="gallery-text" data-en="Multiplayer Online Collaboration" data-zh="多人在线协作">Multiplayer Online Collaboration</div>
@@ -322,6 +322,22 @@
             switchLang(savedLang);
         });
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>

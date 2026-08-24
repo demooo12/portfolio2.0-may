@@ -251,7 +251,7 @@
                         The transformation from sociological observation to a surreal space is a process of continuously stripping away reality and reconstructing "pain."
                     </div>
                     <div class="media-block">
-                        <video src="assets/01.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/01.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                 </div>
 
@@ -260,7 +260,7 @@
                         Assuming the role of anxious parents coerced by the "social clock" and societal peer pressure, players navigate a claustrophobic market filled with suspended cuts of meat (representing 16 male and female candidates). The core interaction—toggling a virtual "Fresh Meat Lamp"—acts as a computational "system glitch." It abruptly switches the environment from a red-tinted fantasy to a harsh, clinical white light. This single click instantly strips away the parents' curated data, replacing the formatted profiles with the stark, often agonizing reality of the individuals underneath.
                     </div>
                     <div class="media-block">
-                        <video src="assets/02.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/02.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                 </div>
 
@@ -274,7 +274,7 @@
                 </div>
                 
                 <div class="gallery-item full-width" style="margin-top: -1rem;">
-                    <video src="assets/03.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video>
+                    <video src="assets/03.mp4" loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;" preload="none"></video>
                 </div>
 
                 <div class="gallery-text" data-en="Once you finalize your &quot;selection&quot; and complete the transaction, the system generates a summary filled with dark humor." data-zh="一旦你最终确定“选择”并完成交易，系统会生成一份充满黑色幽默的总结报告。">
@@ -295,15 +295,15 @@
                         <a href="https://marriagemarket.onrender.com" target="_blank" class="action-btn" style="display: inline-block;" data-en="Project Website ->" data-zh="项目网站 ->">Project Website -></a>
                     </div>
                     <div class="media-block">
-                        <video src="assets/首页.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/首页.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                 </div>
                 
                 <div class="gallery-grid" style="margin-top: 4rem;">
-                    <div class="gallery-item"><video src="assets/lab2.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
-                    <div class="gallery-item"><video src="assets/game.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
-                    <div class="gallery-item"><video src="assets/doc.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
-                    <div class="gallery-item"><video src="assets/文献.mp4" autoplay loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;"></video></div>
+                    <div class="gallery-item"><video src="assets/lab2.mp4" loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;" preload="none"></video></div>
+                    <div class="gallery-item"><video src="assets/game.mp4" loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;" preload="none"></video></div>
+                    <div class="gallery-item"><video src="assets/doc.mp4" loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;" preload="none"></video></div>
+                    <div class="gallery-item"><video src="assets/文献.mp4" loop muted playsinline loading="lazy" style="width: 100%; height: auto; display: block;" preload="none"></video></div>
                 </div>
 
                 <div class="gallery-item full-width" style="margin-top: 4rem;">
@@ -354,6 +354,22 @@
             switchLang(savedLang);
         });
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>

@@ -224,7 +224,7 @@
                         <p data-en="<strong>Visualizing Environmental Decay:</strong> Rather than using traditional data charts, the project visualizes the internet's &quot;population shift&quot; as a process of environmental decay across four distinct stages: Gorgeous, Cumbersome, Absurd, and Decline." data-zh="<strong>环境衰退可视化：</strong>项目没有使用传统的数据图表，而是将互联网的“人口结构变迁”可视化为一个经历四个不同阶段（华丽、笨重、荒诞、衰退）的环境衰退过程。"><strong>Visualizing Environmental Decay:</strong> Rather than using traditional data charts, the project visualizes the internet's "population shift" as a process of environmental decay across four distinct stages: Gorgeous, Cumbersome, Absurd, and Decline.</p>
                     </div>
                     <div class="inline-image-wrap full">
-                        <video src="assets/45.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/45.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                 </div>
             </section>
@@ -242,7 +242,7 @@
                             <p data-en="<strong>The Inescapable Loop:</strong> The core interaction intervenes in the user's agency by constructing a deceptive &quot;no-exit&quot; mechanism." data-zh="<strong>不可逃避的循环：</strong>核心交互通过构建一个具有欺骗性的“无出口”机制，来干预用户的自主权（Agency）。"><strong>The Inescapable Loop:</strong> The core interaction intervenes in the user's agency by constructing a deceptive "no-exit" mechanism.</p>
                         </div>
                         <div class="image-block">
-                            <video src="assets/42.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                            <video src="assets/42.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                         </div>
                     </div>
 
@@ -250,7 +250,7 @@
                         <p data-en="<strong>Illusion of Progress:</strong> Utilizing the geometric logic of the Penrose stairs, the game features a recurring staircase animation that acts as a deceptive hyperlink—promising progress to the player but only delivering a repetition of the void." data-zh="<strong>进步的幻觉：</strong>利用彭罗斯阶梯的几何逻辑，游戏设计了一个循环的楼梯动画作为欺骗性的超链接——它向玩家承诺了前进的可能，但最终带来的只是虚无的重复。"><strong>Illusion of Progress:</strong> Utilizing the geometric logic of the Penrose stairs, the game features a recurring staircase animation that acts as a deceptive hyperlink—promising progress to the player but only delivering a repetition of the void.</p>
                     </div>
                     <div class="inline-image-wrap full" style="margin-top: 1rem; margin-bottom: 3rem;">
-                        <video src="assets/46.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/46.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
 
                     <div class="editorial-text">
@@ -282,19 +282,19 @@
 
                     <div class="inline-image-wrap seventy">
                         <div class="media-label" data-en="Stage 1: Gorgeous" data-zh="第一阶段：华丽 (Gorgeous)">Stage 1: Gorgeous</div>
-                        <video src="assets/47.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/47.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                     <div class="inline-image-wrap seventy">
                         <div class="media-label" data-en="Stage 2: Cumbersome" data-zh="第二阶段：笨重 (Cumbersome)">Stage 2: Cumbersome</div>
-                        <video src="assets/48.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/48.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                     <div class="inline-image-wrap seventy">
                         <div class="media-label" data-en="Stage 3: Absurd" data-zh="第三阶段：荒诞 (Absurd)">Stage 3: Absurd</div>
-                        <video src="assets/49.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/49.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                     <div class="inline-image-wrap seventy" style="margin-bottom: 3rem;">
                         <div class="media-label" data-en="Stage 4: Decline" data-zh="第四阶段：衰退 (Decline)">Stage 4: Decline</div>
-                        <video src="assets/50.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/50.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
 
                     <div class="editorial-text">
@@ -353,6 +353,22 @@
             switchLang(savedLang);
         });
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>

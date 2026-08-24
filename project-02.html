@@ -245,7 +245,7 @@
                         <p data-en="Upon losing, the game triggers a cinematic &quot;execution&quot; sequence where the chopsticks deliver the sashimi directly into a child's mouth via a calculated parabolic trajectory. This mechanic of &quot;struggling to survive only to be inevitably consumed&quot; perfectly echoes the project's absurd and predetermined nature." data-zh="一旦失败，游戏将触发一段电影般的“处决”序列：筷子通过计算好的抛物线轨迹，将刺身直接送入一个女孩的口中。这种“努力求生却注定被吞噬”的机制，完美呼应了该项目荒诞且预定的宿命色彩。">Upon losing, the game triggers a cinematic "execution" sequence where the chopsticks deliver the sashimi directly into a child's mouth via a calculated parabolic trajectory. This mechanic of "struggling to survive only to be inevitably consumed" perfectly echoes the project's absurd and predetermined nature.</p>
                     </div>
                     <div class="inline-image-wrap full">
-                        <video src="assets/交互示意图.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/交互示意图.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                 </div>
             </section>
@@ -275,22 +275,22 @@
                 </div>
                 
                 <div class="gallery-item full-width">
-                    <video src="assets/mocap.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    <video src="assets/mocap.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                 </div>
                 <div class="gallery-item full-width">
-                    <video src="assets/骨架.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    <video src="assets/骨架.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                 </div>
 
                 <div class="gallery-text" data-en="Gameplay Dynamics & Cinematics" data-zh="游戏动态与过场动画">Gameplay Dynamics & Cinematics</div>
                 <div class="gallery-grid">
-                    <div class="gallery-item"><video src="assets/16.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
-                    <div class="gallery-item"><video src="assets/17.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
+                    <div class="gallery-item"><video src="assets/16.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
+                    <div class="gallery-item"><video src="assets/17.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
 
-                    <div class="gallery-item"><video src="assets/20.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
-                    <div class="gallery-item"><video src="assets/21.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
+                    <div class="gallery-item"><video src="assets/20.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
+                    <div class="gallery-item"><video src="assets/21.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
 
-                    <div class="gallery-item"><video src="assets/22.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
-                    <div class="gallery-item"><video src="assets/23.mp4" autoplay loop muted playsinline loading="lazy"></video></div>
+                    <div class="gallery-item"><video src="assets/22.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
+                    <div class="gallery-item"><video src="assets/23.mp4" loop muted playsinline loading="lazy" preload="none"></video></div>
                 </div>
             </section>
 
@@ -345,6 +345,22 @@
             switchLang(savedLang);
         });
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>

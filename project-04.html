@@ -249,7 +249,7 @@
                         <p data-en="The system features a text input listener that automatically triggers when a question mark (&quot;?&quot;) is detected, eliminating redundant clicks and mimicking the fluid flow of a real conversation." data-zh="系统配备了文本输入监听器，当检测到问号（&quot;?&quot;）时会自动触发，消除了多余的点击，模仿了真实对话中流畅的节奏。">The system features a text input listener that automatically triggers when a question mark ("?") is detected, eliminating redundant clicks and mimicking the fluid flow of a real conversation.</p>
                     </div>
                     <div class="media-block">
-                        <video src="assets/问号召唤.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                        <video src="assets/问号召唤.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                     </div>
                 </div>
 
@@ -277,8 +277,8 @@
                     <p data-en="Users physically pose in a prayer-like motion (putting hands together); when the distance between the wrists is close enough (&lt; 130px), the system triggers the function to summon the animated angel and deliver an answer." data-zh="用户在物理世界中做出祈祷般的姿势（双手合十）；当双腕之间的距离足够近（&lt; 130px）时，系统会触发召唤动态天使并给出答案的功能。">Users physically pose in a prayer-like motion (putting hands together); when the distance between the wrists is close enough (< 130px), the system triggers the function to summon the animated angel and deliver an answer.</p>
                 </div>
                 <div class="gallery-grid">
-                    <video src="assets/好的.mp4" autoplay loop muted playsinline loading="lazy"></video>
-                    <video src="assets/坏的.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    <video src="assets/好的.mp4" loop muted playsinline loading="lazy" preload="none"></video>
+                    <video src="assets/坏的.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                 </div>
 
                 <div class="sub-heading" data-en="Burn & Reset" data-zh="燃烧与重置">Burn & Reset</div>
@@ -286,7 +286,7 @@
                     <p data-en="If the user is unsatisfied with the given answer, they can click the screen to &quot;burn&quot; the answer away, releasing stress and resetting the system state." data-zh="如果用户对给出的答案不满意，可以点击屏幕将答案“燃烧”掉，以此释放压力并重置系统状态。">If the user is unsatisfied with the given answer, they can click the screen to "burn" the answer away, releasing stress and resetting the system state.</p>
                 </div>
                 <div class="inline-image-wrap seventy">
-                    <video src="assets/燃烧.mp4" autoplay loop muted playsinline loading="lazy"></video>
+                    <video src="assets/燃烧.mp4" loop muted playsinline loading="lazy" preload="none"></video>
                 </div>
 
             </section>
@@ -351,6 +351,22 @@
             switchLang(savedLang);
         });
     </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
 
 </body>
 </html>
