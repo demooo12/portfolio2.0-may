@@ -114,6 +114,8 @@
             position: relative; top: 1px; transition: color 0.3s ease;
         }
         .filter-tab.active, .filter-tab:hover { color: #111; border-bottom: 2px solid #111; }
+        /* 中文模式下暂时隐藏「插画+制品」分类 */
+        body.lang-zh .filter-tab[data-target="illustration"] { display: none; }
         
         .category-content { display: none; animation: fadeIn 0.4s ease; }
         .category-content.active { display: block; }
@@ -1157,6 +1159,19 @@
                 } else {
                     body.classList.remove('lang-zh');
                     body.classList.add('lang-en');
+                }
+
+                // 中文模式下插画栏隐藏；若此时正停在插画，跳回品牌栏
+                if (lang === 'zh') {
+                    const illu = document.getElementById('illustration');
+                    if (illu && illu.classList.contains('active')) {
+                        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
+                        const bTab = document.querySelector('.filter-tab[data-target="brand"]');
+                        const bContent = document.getElementById('brand');
+                        if (bTab) bTab.classList.add('active');
+                        if (bContent) bContent.classList.add('active');
+                    }
                 }
 
                 document.querySelectorAll('[data-en]').forEach(el => {

@@ -136,7 +136,9 @@
             padding: 15px 6px;
         }
 
+        .detail-images img { width: 70%; display: block; margin: 0 auto 1.2rem; border-radius: 6px; }
         @media (max-width: 768px) {
+            .detail-images img { width: 100%; }
             .container { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
             .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
@@ -157,7 +159,7 @@
         }
     </style>
 </head>
-<body class="lang-en">
+<body class="lang-zh">
 
     <div class="container">
         <nav class="sidebar">
@@ -192,7 +194,6 @@
                     
                     <div class="link-group">
                         <span class="action-btn award-btn" data-en="🏆 Platinum Originality Award" data-zh="🏆 白金国际设计大赛优秀奖">🏆 Platinum Originality Award</span>
-                        <a href="assets/wks.pdf" target="_blank" class="action-btn" data-en="Open PDF in New Tab ->" data-zh="在新标签页打开 PDF ->">Open PDF in New Tab -></a>
                     </div>
                 </div>
                 
@@ -216,17 +217,24 @@
                 </div>
             </header>
 
-            <section class="detail-text-section">
-                <div class="section-heading" data-en="Project Overview" data-zh="项目概览">Project Overview</div>
-                <div class="editorial-text">
-                    <p data-en="This project focuses on the rebranding and pop-up event visual design for the Wukuaishi Community. It was awarded the Excellence Award in the Platinum Originality International Graphic Design Competition. The full presentation deck is embedded below." data-zh="本项目专注于五块石社区的品牌更新以及快闪活动的视觉设计。该项目荣获白金国际设计大赛优秀奖。完整的项目展示文档请参阅下方 PDF。">This project focuses on the rebranding and pop-up event visual design for the Wukuaishi Community. It was awarded the Excellence Award in the Platinum Originality International Graphic Design Competition. The full presentation deck is embedded below.</p>
-                </div>
-            </section>
-
-            <section class="pdf-wrapper">
-                <iframe src="assets/wks.pdf#view=FitH" title="Wukuaishi Community Rebranding Presentation">
-                    <p data-en="Your browser does not support PDFs. Please use the button above to download." data-zh="您的浏览器不支持直接预览 PDF，请点击上方的按钮下载查看。">Your browser does not support PDFs. Please use the button above to download.</p>
-                </iframe>
+            <section class="detail-images">
+                <img src="assets/wks-01.jpg" alt="五块石社区品牌更新 1" loading="lazy">
+                <img src="assets/wks-02.jpg" alt="五块石社区品牌更新 2" loading="lazy">
+                <img src="assets/wks-03.jpg" alt="五块石社区品牌更新 3" loading="lazy">
+                <img src="assets/wks-04.jpg" alt="五块石社区品牌更新 4" loading="lazy">
+                <img src="assets/wks-05.jpg" alt="五块石社区品牌更新 5" loading="lazy">
+                <img src="assets/wks-06.jpg" alt="五块石社区品牌更新 6" loading="lazy">
+                <img src="assets/wks-07.jpg" alt="五块石社区品牌更新 7" loading="lazy">
+                <img src="assets/wks-08.jpg" alt="五块石社区品牌更新 8" loading="lazy">
+                <img src="assets/wks-09.jpg" alt="五块石社区品牌更新 9" loading="lazy">
+                <img src="assets/wks-10.jpg" alt="五块石社区品牌更新 10" loading="lazy">
+                <img src="assets/wks-11.jpg" alt="五块石社区品牌更新 11" loading="lazy">
+                <img src="assets/wks-12.jpg" alt="五块石社区品牌更新 12" loading="lazy">
+                <img src="assets/wks-13.jpg" alt="五块石社区品牌更新 13" loading="lazy">
+                <img src="assets/wks-14.jpg" alt="五块石社区品牌更新 14" loading="lazy">
+                <img src="assets/wks-15.jpg" alt="五块石社区品牌更新 15" loading="lazy">
+                <img src="assets/wks-16.jpg" alt="五块石社区品牌更新 16" loading="lazy">
+                <img src="assets/wks-17.jpg" alt="五块石社区品牌更新 17" loading="lazy">
             </section>
 
         </main>
@@ -267,7 +275,7 @@
             });
 
             // 初始化
-            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            const savedLang = localStorage.getItem('portfolio-lang') || 'zh';
             switchLang(savedLang);
         });
     </script>
