@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋游季 · 超级品牌日 - Jiayun Song</title>
+    <style>
+        /* Base Reset & Typography */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 15px; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column; 
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        /* Main Content Area */
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        /* Back Link & Action Buttons */
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+        
+        /* 特殊奖项标签样式 */
+        .award-btn {
+            border-color: #b8860b; 
+            color: #b8860b; 
+            pointer-events: none; /* 仅作为标签展示，不可点击 */
+        }
+
+        /* Header Section */
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: 400; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        /* 标签与按钮同行排版 */
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .header-tags-actions .link-group { margin-bottom: 0; }
+
+        /* Meta Data Grid */
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        /* Editorial Text Section */
+        .detail-text-section { margin-bottom: 2rem; }
+        .section-heading { font-size: 1.5rem; font-weight: 400; text-transform: uppercase; margin-bottom: 1rem; }
+        .editorial-text { font-size: 1.1rem; color: #333; line-height: 1.5; }
+        .editorial-text p { margin-bottom: 1.5rem; }
+
+        /* ==================================================== */
+        /* PDF 专属展示容器 */
+        /* ==================================================== */
+        .pdf-wrapper {
+            width: 100%;
+            margin-bottom: 4rem;
+        }
+        .pdf-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .pdf-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 中英文切换滑块和中文排版专用的 CSS */
+        .lang-toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 54px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #eee;
+            border: 1px solid #111;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 3px; top: 4px;
+            background-color: #111;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        /* 中文模式下，导航按钮从上到下正向排列 */
+        body.lang-zh .nav-pill {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform: none; 
+            letter-spacing: 0.15em; 
+            padding: 15px 6px;
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            
+            /* 手机端 PDF 高度自适应缩减 */
+            .pdf-wrapper { height: 65vh; }
+
+            /* 手机端中英滑块横向 */
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="Autumn Outing Season · Super Brand Day | 3D Key Visual Design Playbook" data-zh="秋游季 · 超级品牌日 | 3D 主视觉设计执行手册">Autumn Outing Season · Super Brand Day | 3D Key Visual Design Playbook</h1>
+
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                        <span data-en="/ BRAND · 3D KEY VISUAL" data-zh="/ 品牌 · 3D 主视觉">/ BRAND · 3D KEY VISUAL</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Project Overview" data-zh="项目概览">Project Overview</div>
+                <div class="editorial-text">
+                    <p data-en="As autumn deepens, seasonal outings become a ritual for city dwellers escaping the daily rush. As a local lifestyle platform, Meituan connects every part of eating, playing and exploring. This campaign builds an &quot;Autumn Outing Squad&quot; around the brand IP &quot;Meituan Kangaroo&quot;: a flag-waving leader kangaroo heads a troop of kangaroos, each with its own persona, wandering through golden ginkgo trees and stringing food, camping, tickets, lodging and photo spots into one seamless journey — so that Meituan travels along on every trip." data-zh="秋意渐浓，赏秋出游成为都市人逃离忙碌的仪式感。美团作为本地生活服务平台，连接吃喝玩乐的每一环。此次以品牌 IP「美团袋鼠」组建「秋游团」：领队袋鼠举旗带队，一队各具身份的袋鼠穿行金色银杏之间，将美食 · 露营 · 门票 · 住宿 · 拍照打卡一站式串联——让每一次出游，都有美团同行。">As autumn deepens, seasonal outings become a ritual for city dwellers escaping the daily rush. As a local lifestyle platform, Meituan connects every part of eating, playing and exploring. This campaign builds an "Autumn Outing Squad" around the brand IP "Meituan Kangaroo": a flag-waving leader kangaroo heads a troop of kangaroos, each with its own persona, wandering through golden ginkgo trees and stringing food, camping, tickets, lodging and photo spots into one seamless journey — so that Meituan travels along on every trip.</p>
+                </div>
+            </section>
+
+            <section class="detail-images">
+                <img src="assets/meituan-p1.jpg" alt="美团秋游季 3D 主视觉 1" loading="lazy" style="width:100%;display:block;margin-bottom:1.2rem;border-radius:6px;">
+                <img src="assets/meituan-p2.jpg" alt="美团秋游季 3D 主视觉 2" loading="lazy" style="width:100%;display:block;margin-bottom:1.2rem;border-radius:6px;">
+                <img src="assets/meituan-p3.jpg" alt="美团秋游季 3D 主视觉 3" loading="lazy" style="width:100%;display:block;margin-bottom:1.2rem;border-radius:6px;">
+                <img src="assets/meituan-p4.jpg" alt="美团秋游季 3D 主视觉 4" loading="lazy" style="width:100%;display:block;margin-bottom:1.2rem;border-radius:6px;">
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+            
+            function switchLang(lang) {
+                // 1. 切换 Checkbox 状态
+                langCheckbox.checked = (lang === 'zh');
+
+                // 2. 切换 Body Class
+                if (lang === 'zh') {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                } else {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                }
+
+                // 3. 替换内容
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) {
+                        el.innerHTML = newText;
+                    }
+                });
+
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                const lang = langCheckbox.checked ? 'zh' : 'en';
+                switchLang(lang);
+            });
+
+            // 初始化
+            const savedLang = localStorage.getItem('portfolio-lang') || 'en';
+            switchLang(savedLang);
+        });
+    </script>
+
+    <script>
+    /* 视频懒加载：划到视口才加载+播放，划走暂停，省流量 */
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+</script>
+
+
+    <!-- ICP 备案号（工信部要求，勿删） -->
+    <footer style="text-align:center;padding:1.9rem 1rem;background:#f4f4f4;color:#8a8a8a;font-size:0.72rem;letter-spacing:.04em;font-family:inherit;">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color:#8a8a8a;text-decoration:none;">蜀ICP备2026049975号</a>
+    </footer>
+</body>
+</html>
