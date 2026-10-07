@@ -105,15 +105,15 @@
         /* 作品分类悬停标签 (Category Filters) */
         /* ==================================================== */
         .category-filters {
-            display: flex; gap: 2.5rem; margin-bottom: 4rem;
-            border-bottom: 1px solid #ccc; flex-wrap: wrap;
+            display: flex; justify-content: center; gap: 0.7rem; margin-bottom: 4rem;
+            flex-wrap: wrap;
         }
         .filter-tab {
-            font-size: 1.2rem; font-weight: bold; text-transform: uppercase;
-            color: #999; padding-bottom: 0.8rem; cursor: pointer;
-            position: relative; top: 1px; transition: color 0.3s ease;
+            font-size: 0.95rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em;
+            color: #555; padding: 0.55rem 1.4rem; cursor: pointer; user-select: none;
+            border: 1px solid #d2d2d2; border-radius: 999px; transition: all 0.2s ease;
         }
-        .filter-tab.active, .filter-tab:hover { color: #111; border-bottom: 2px solid #111; }
+        .filter-tab.active, .filter-tab:hover { color: #fff; background: #111; border-color: #111; }
         /* 中文模式下暂时隐藏「插画+制品」分类 */
         body.lang-zh .filter-tab[data-target="illustration"] { display: none; }
         
@@ -337,8 +337,8 @@
             body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
             .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
             
-            .category-filters { gap: 1rem; justify-content: center; margin-bottom: 2rem; }
-            .filter-tab { font-size: 1rem; text-align: center; }
+            .category-filters { gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+            .filter-tab { font-size: 0.82rem; padding: 0.45rem 1rem; text-align: center; }
 
             .project-item { grid-template-columns: 1fr; }
             .project-media { order: -1; }
@@ -1187,14 +1187,15 @@
             const categoryContents = document.querySelectorAll('.category-content');
 
             filterTabs.forEach(tab => {
-                tab.addEventListener('mouseenter', () => {
+                const activate = () => {
                     filterTabs.forEach(t => t.classList.remove('active'));
                     categoryContents.forEach(c => c.classList.remove('active'));
-
                     tab.classList.add('active');
                     const targetId = tab.getAttribute('data-target');
                     document.getElementById(targetId).classList.add('active');
-                });
+                };
+                tab.addEventListener('mouseenter', activate); // 电脑：悬停切换
+                tab.addEventListener('click', activate);      // 电脑点击 + 手机点按
             });
             // --------------------------------
 
