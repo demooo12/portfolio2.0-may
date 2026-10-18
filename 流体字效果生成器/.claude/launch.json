@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {"name": "lab", "runtimeExecutable": "node", "runtimeArgs": ["/Users/songjiayun/Desktop/pro-svg-lab-main/.claude/serve.cjs"], "port": 8765}
+  ]
+}

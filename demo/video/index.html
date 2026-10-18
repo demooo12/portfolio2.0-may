@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>演示视频 · 宋佳韵 Jiayun Song</title>
+    <style>
+        :root { color-scheme: light; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f4f4f4; color: #111;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+            padding: 6vh 20px;
+        }
+        .wrap { width: 100%; max-width: 960px; }
+        header { margin-bottom: 1.6rem; }
+        h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; letter-spacing: -0.01em; }
+        .sub { margin-top: 0.4rem; color: #777; font-size: 0.95rem; letter-spacing: 0.02em; }
+        .video-frame {
+            width: 100%; background: #000; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0,0,0,.14); line-height: 0;
+        }
+        video { width: 100%; height: auto; display: block; }
+        footer { margin-top: 2rem; color: #999; font-size: 0.8rem; letter-spacing: 0.04em; }
+        footer a { color: #777; text-decoration: none; border-bottom: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <h1>演示视频</h1>
+            <p class="sub">宋佳韵 · Jiayun Song</p>
+        </header>
+        <div class="video-frame">
+            <video src="video.mp4" controls playsinline preload="metadata"></video>
+        </div>
+        <footer>
+            © 2026 宋佳韵 · 更多作品 <a href="https://songjiayun.cn" target="_blank" rel="noopener">songjiayun.cn</a>
+        </footer>
+    </div>
+</body>
+</html>
