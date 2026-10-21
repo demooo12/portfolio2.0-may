@@ -443,7 +443,6 @@
             <a href="#" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
             <a href="#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
             <a href="#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
-            <a href="#" onclick="openResume(event)" class="nav-pill" data-en="RESUME" data-zh="简历">RESUME</a>
         </nav>
 
         <main class="main-content">
@@ -451,7 +450,6 @@
             <section class="hero">
                 <h1>
                     <span data-en="Hi! I'm a multidisciplinary designer & illustrator. I explore the intersection of interactive technology, speculative narratives, and user experience. I also excel at harnessing AI tools to bring my creative inspirations to life." data-zh="你好！我是一名多学科设计师与插画师。我致力于探索交互技术、推测性叙事与用户体验的交汇点，并擅长利用 AI 工具将创意灵感转化为现实。">Hi! I'm a multidisciplinary designer & illustrator. I explore the intersection of interactive technology, speculative narratives, and user experience. I also excel at harnessing AI tools to bring my creative inspirations to life.</span>
-                    <a href="#" onclick="openResume(event)" class="hero-resume-btn" data-en="RESUME ->" data-zh="简历 ->">RESUME -></a>
                 </h1>
             </section>
 
@@ -831,12 +829,6 @@
         </main>
     </div>
 
-    <div id="resume-modal" class="resume-modal">
-        <span class="close-modal-btn" onclick="closeResume()">&times;</span>
-        <div class="resume-modal-content" onclick="event.stopPropagation()">
-            <img src="assets/resume-may.png" alt="Jiayun Song Resume">
-        </div>
-    </div>
 
     <div id="illust-wall-modal" class="resume-modal">
         <span class="close-modal-btn" onclick="closeIllustWallModal()">&times;</span>
@@ -923,17 +915,6 @@
             document.body.classList.toggle('modal-open', !!anyOpen);
         }
 
-        // --- 简历弹窗控制逻辑 ---
-        function openResume(e) {
-            e.preventDefault(); // 阻止原本的链接跳转
-            document.getElementById('resume-modal').classList.add('show');
-            updateBodyScrollLock();
-        }
-
-        function closeResume() {
-            document.getElementById('resume-modal').classList.remove('show');
-            updateBodyScrollLock();
-        }
 
         // 点击背景空白处关闭弹窗
         document.getElementById('resume-modal').addEventListener('click', function(e) {

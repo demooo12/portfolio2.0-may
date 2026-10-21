@@ -1,0 +1,19 @@
+Mixweight 离线版
+================
+
+把字体一个字母一个字母地混在一起，然后导出到 Illustrator / InDesign / Photoshop，导出的文字仍然可以编辑。
+
+怎么打开
+1. 解压整个文件夹
+2. 用 Chrome 或 Edge 打开 index.html（右键 → 打开方式 → Chrome）
+   不要用 Safari，Safari 读不到电脑里装的字体
+3. 点顶部工具栏的「本机字体」，浏览器会问是否允许读取本机字体，选允许
+   也可以直接把 .ttf / .otf 文件拖进页面
+
+导出到设计软件
+- Illustrator：文件 › 脚本 › 其他脚本…，选 mixweight-illustrator.jsx
+- InDesign：窗口 › 实用程序 › 脚本，右键 User 文件夹 › 在访达中显示，把 .jsx 放进去，再在面板里双击
+- Photoshop：文件 › 脚本 › 浏览…，选 mixweight-photoshop.jsx
+- 页面右上角的「帮助」有更详细的说明
+
+在线版（国外网络或开 VPN 时可用）：https://mixweight.pages.dev
