@@ -916,13 +916,6 @@
         }
 
 
-        // 点击背景空白处关闭弹窗
-        document.getElementById('resume-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeResume();
-            }
-        });
-
         // --- 制品/插画放大浮层控制逻辑：点击卡片，大图浮出，背景虚化，一行两张可滚动查看 ---
         // floatImages 存在时，会在图片背后放几张 logo，像 DVD 屏保那样撞边反弹漂浮
         let floatRafId = null;
