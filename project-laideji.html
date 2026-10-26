@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>来得及！In Time - Jiayun Song</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 15px; }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4; color: #111; line-height: 1.2; overflow-x: hidden;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 60px; position: fixed; top: 0; left: 0; height: 100vh;
+            border-right: 1px solid #111; display: flex; flex-direction: column;
+            align-items: center; padding: 1.5rem 0; background: #f4f4f4; z-index: 100;
+        }
+        .nav-pill {
+            writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+            border: 1px solid #111; border-radius: 50px; padding: 15px 6px; margin-bottom: 10px;
+            font-size: 0.8rem; text-transform: uppercase; text-decoration: none;
+            color: #111; font-weight: bold; background: #fff; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-pill:hover { background: #111; color: #fff; }
+
+        .main-content { margin-left: 60px; padding: 2rem 2.5rem; width: calc(100% - 60px); }
+
+        .link-group { margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .action-btn {
+            display: inline-block; text-decoration: none; color: #111; font-weight: bold;
+            font-family: monospace; text-transform: uppercase; border: 1px solid #111;
+            padding: 8px 15px; border-radius: 20px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #111; color: #fff; }
+
+        .detail-header { margin-bottom: 2rem; }
+        .detail-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: 400; line-height: 1.05; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+
+        .header-tags-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+        .detail-team-tag { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #555; }
+        .detail-team-tag .highlight { color: #111; font-weight: bold; border-bottom: 1px solid #111; padding-bottom: 2px; }
+        .pill-live {
+            font-family: monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+            color: #d6304a; border: 1px solid #d6304a; border-radius: 999px; padding: 4px 10px;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .pill-live::before { content:""; width:6px; height:6px; border-radius:50%; background:#d6304a; display:inline-block; }
+
+        .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid #111; border-bottom: 2px solid #111; margin-bottom: 3rem; }
+        .meta-item { padding: 1rem 1rem 1rem 0; border-right: 1px solid #111; display: flex; flex-direction: column; gap: 5px; }
+        .meta-item:last-child { border-right: none; padding-right: 0; }
+        .meta-label { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+        .meta-value { font-size: 1rem; font-weight: bold; }
+
+        .detail-text-section { margin-bottom: 2rem; }
+        .section-heading { font-size: 1.5rem; font-weight: 400; text-transform: uppercase; margin-bottom: 1rem; }
+        .editorial-text { font-size: 1.1rem; color: #333; line-height: 1.5; }
+        .editorial-text p { margin-bottom: 1.5rem; }
+
+        .lang-toggle-container { margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .switch { position: relative; display: inline-block; width: 30px; height: 54px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #eee; border: 1px solid #111; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; top: 4px; background-color: #111; transition: .4s; border-radius: 50%; }
+        input:checked + .slider:before { transform: translateY(22px); }
+        .lang-label { font-family: monospace; font-size: 0.7rem; font-weight: bold; }
+
+        body.lang-zh .nav-pill { writing-mode: vertical-rl; text-orientation: upright; transform: none; letter-spacing: 0.15em; padding: 15px 6px; }
+
+        .proj-media { margin-top: 1rem; }
+        .proj-media img, .proj-media video { width: 100%; display: block; border-radius: 8px; margin-bottom: 1.4rem; background: #000; }
+        .deck-label { font-family: monospace; font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em; color:#111; border-top:2px solid #111; padding-top:.7rem; margin: 1.5rem 0 1.4rem; }
+        .media-cap { font-family: monospace; font-size: 0.78rem; color: #999; margin: -0.9rem 0 2.2rem; letter-spacing: .03em; }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; border-right: none; border-bottom: 1px solid #111; padding: 1rem; justify-content: center; gap: 15px; align-items: center; }
+            .nav-pill { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; padding: 6px 12px; }
+            .main-content { margin-left: 0; width: 100%; padding: 1.5rem; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); border-bottom: none; }
+            .meta-item { border-bottom: 1px solid #111; padding: 1rem 0; }
+            .meta-item:nth-child(even) { border-right: none; padding-left: 1rem; }
+            .lang-toggle-container { flex-direction: row; margin-bottom: 0; gap: 5px; }
+            .switch { width: 44px; height: 26px; }
+            input:checked + .slider:before { transform: translate(18px, 0); }
+            .slider:before { top: 2px; left: 2px; height: 20px; width: 20px; }
+            body.lang-zh .nav-pill { writing-mode: horizontal-tb; letter-spacing: 0; }
+        }
+    </style>
+</head>
+<body class="lang-zh">
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="lang-toggle-container">
+                <span class="lang-label">EN</span>
+                <label class="switch">
+                    <input type="checkbox" id="lang-checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span class="lang-label">中</span>
+            </div>
+
+            <a href="index.html" class="nav-pill" data-en="JIAYUN SONG" data-zh="宋佳韵">JIAYUN SONG</a>
+            <a href="index.html#works" class="nav-pill" data-en="WORKS" data-zh="作品列表">WORKS</a>
+            <a href="index.html#info" class="nav-pill" data-en="INFO" data-zh="个人简介">INFO</a>
+        </nav>
+
+        <main class="main-content">
+
+            <div class="link-group" style="margin-bottom: 2rem;">
+                <a href="index.html" class="action-btn" data-en="<- BACK TO WORKS" data-zh="<- 返回作品列表"><- BACK TO WORKS</a>
+            </div>
+
+            <header class="detail-header">
+                <h1 class="detail-title" data-en="In Time!" data-zh="来得及！">来得及！</h1>
+
+                <div class="header-tags-actions">
+                    <div class="detail-team-tag">
+                        <span class="highlight" data-en="SOLO" data-zh="个人项目">SOLO</span>
+                        <span data-en="/ AI-NATIVE PRODUCT · 0 → 1" data-zh="/ AI 原生产品 · 从 0 到 1">/ AI-NATIVE PRODUCT · 0 → 1</span>
+                    </div>
+                    <span class="pill-live" data-en="LIVE · Shanghai PVG &amp; Chengdu TFU" data-zh="已上线 · 上海浦东 &amp; 成都天府">LIVE · Shanghai PVG &amp; Chengdu TFU</span>
+                </div>
+
+                <div class="meta-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Type" data-zh="类型">Type</span>
+                        <span class="meta-value" data-en="AI-Native Mini-App" data-zh="AI 原生小程序">AI-Native Mini-App</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Build" data-zh="周期">Build</span>
+                        <span class="meta-value" data-en="7 Days, 0 → 1" data-zh="7 天，0 → 1">7 Days, 0 → 1</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Tools" data-zh="工具">Tools</span>
+                        <span class="meta-value" data-en="Claude Code · RED Cowork" data-zh="Claude Code · RED Cowork">Claude Code · RED Cowork</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label" data-en="Role" data-zh="角色">Role</span>
+                        <span class="meta-value" data-en="Product · Design · Visual" data-zh="产品 · 设计 · 视觉">Product · Design · Visual</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="detail-text-section">
+                <div class="section-heading" data-en="Project Overview" data-zh="项目概览">Project Overview</div>
+                <div class="editorial-text">
+                    <p data-en="&quot;However big the airport, you'll still make it in time.&quot; In Time! is an AI-native mini-app that turns the scattered &quot;will-I-make-my-gate&quot; experience posts on Xiaohongshu (RED) into one instant answer. You pick your situation — already at the airport, or still planning — say one sentence, and it replies with a verdict (In time / Cutting it close / Won't make it), a subway-map-style route and one actionable tip." data-zh="「机场再大，也来得及。」来得及！是一个 AI 原生小程序，把小红书上零散的「赶登机口」经验，变成一个即时答案。先选处境——「我在机场」赶路，或「还没出发」规划——说一句话，它就给出判断（来得及 / 很紧 / 来不及）、一张地铁线路图式的示意路线，和一句马上能照做的建议。">&quot;However big the airport, you'll still make it in time.&quot; In Time! is an AI-native mini-app that turns the scattered &quot;will-I-make-my-gate&quot; experience posts on Xiaohongshu (RED) into one instant answer. You pick your situation — already at the airport, or still planning — say one sentence, and it replies with a verdict (In time / Cutting it close / Won't make it), a subway-map-style route and one actionable tip.</p>
+                    <p data-en="The split of labour is deliberate: the AI only extracts fields from what the user typed and writes the final sentence; a deterministic rule-and-shortest-path layer does the actual timing, so results stay accurate, explainable and consistent. I worked solo across the whole 0 → 1: framing the problem and the trade-offs, the visual direction, the logo and key visual, the prompt and calculation logic, and testing every path — shipped to RED Cowork, now live for Shanghai Pudong and Chengdu Tianfu." data-zh="分工是刻意设计的：AI 只负责从用户的话里抽取字段、并写出最后那句建议；真正的计时交给一套确定的规则 + 最短路计算，让结果准确、可解释、每次一致。整个 0 → 1 由我独立完成：发现问题与定取舍、视觉方向、Logo 与主视觉、计算逻辑与 prompt、逐条链路测试——部署上线到 RED Cowork，目前已覆盖上海浦东与成都天府两个机场。">The split of labour is deliberate: the AI only extracts fields from what the user typed and writes the final sentence; a deterministic rule-and-shortest-path layer does the actual timing, so results stay accurate, explainable and consistent. I worked solo across the whole 0 → 1: framing the problem and the trade-offs, the visual direction, the logo and key visual, the prompt and calculation logic, and testing every path — shipped to RED Cowork, now live for Shanghai Pudong and Chengdu Tianfu.</p>
+                </div>
+            </section>
+
+                        <section class="proj-media">
+                <video src="demo/video/video.mp4" poster="assets/laideji-cover.jpg" controls playsinline preload="metadata"></video>
+                <p class="media-cap" data-en="Product demo — pick a situation, say one sentence, get a verdict + route" data-zh="产品演示 · 先选处境，说一句话，得到判断 + 路线">产品演示 · 先选处境，说一句话，得到判断 + 路线</p>
+
+                <div class="deck-label" data-en="Full product deck" data-zh="完整产品说明">完整产品说明</div>
+                <img src="assets/laideji-p1.jpg" alt="来得及 产品说明 第1页" loading="lazy">
+                <img src="assets/laideji-p2.jpg" alt="来得及 产品说明 第2页" loading="lazy">
+                <img src="assets/laideji-p3.jpg" alt="来得及 产品说明 第3页" loading="lazy">
+                <img src="assets/laideji-p4.jpg" alt="来得及 产品说明 第4页" loading="lazy">
+                <img src="assets/laideji-p5.jpg" alt="来得及 产品说明 第5页" loading="lazy">
+                <img src="assets/laideji-p6.jpg" alt="来得及 产品说明 第6页" loading="lazy">
+                <img src="assets/laideji-p7.jpg" alt="来得及 产品说明 第7页" loading="lazy">
+                <img src="assets/laideji-p8.jpg" alt="来得及 产品说明 第8页" loading="lazy">
+                <img src="assets/laideji-p9.jpg" alt="来得及 产品说明 第9页" loading="lazy">
+                <img src="assets/laideji-p10.jpg" alt="来得及 产品说明 第10页" loading="lazy">
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langCheckbox = document.getElementById('lang-checkbox');
+            const body = document.body;
+
+            function switchLang(lang) {
+                langCheckbox.checked = (lang === 'zh');
+                if (lang === 'zh') { body.classList.remove('lang-en'); body.classList.add('lang-zh'); }
+                else { body.classList.remove('lang-zh'); body.classList.add('lang-en'); }
+
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    const newText = el.getAttribute(`data-${lang}`);
+                    if (newText) { el.innerHTML = newText; }
+                });
+                localStorage.setItem('portfolio-lang', lang);
+            }
+
+            langCheckbox.addEventListener('change', () => {
+                switchLang(langCheckbox.checked ? 'zh' : 'en');
+            });
+
+            const savedLang = localStorage.getItem('portfolio-lang') || 'zh';
+            switchLang(savedLang);
+        });
+    </script>
+
+    <script>
+    (function () {
+        var vids = document.querySelectorAll('video');
+        if (!vids.length || !('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+                else { v.pause(); }
+            });
+        }, { rootMargin: '250px 0px', threshold: 0.01 });
+        vids.forEach(function (v) { io.observe(v); });
+    })();
+    </script>
+
+    <!-- ICP 备案号（工信部要求，勿删） -->
+    <footer style="text-align:center;padding:1.9rem 1rem;background:#f4f4f4;color:#8a8a8a;font-size:0.72rem;letter-spacing:.04em;font-family:inherit;">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color:#8a8a8a;text-decoration:none;">蜀ICP备2026049975号</a>
+    </footer>
+</body>
+</html>

@@ -124,6 +124,64 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== Vibecoding 四分类卡片 ===== */
+        .vibe-cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.8rem; }
+        .vibe-cat {
+            -webkit-appearance: none; appearance: none; font: inherit; color: inherit; text-align: left;
+            position: relative; border: 1px solid #ddd; border-radius: 16px; overflow: hidden;
+            background: #fff; cursor: pointer; padding: 0;
+            transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+        }
+        .vibe-cat:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,.13); border-color: #111; }
+        .vibe-cat-collage { display: grid; gap: 2px; aspect-ratio: 16/10; background: #e8e8e8; }
+        .vibe-cat-collage.c4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+        .vibe-cat-collage.c3 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+        .vibe-cat-collage.c3 > *:first-child { grid-column: 1 / 3; }
+        .vibe-cat-collage.c2 { grid-template-columns: 1fr 1fr; }
+        .vibe-cat-collage.c1 { grid-template-columns: 1fr; }
+        .vibe-cat-collage img, .vibe-cat-collage video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .vibe-cat-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.3rem; }
+        .vibe-cat-name { font-size: 1.2rem; font-weight: 600; letter-spacing: .01em; }
+        .vibe-cat-sub { display: block; margin-top: .3rem; font-family: monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: #999; }
+        .vibe-cat-enter { flex: none; font-family: monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: #111; border: 1px solid #111; border-radius: 999px; padding: .4rem .85rem; white-space: nowrap; transition: background .3s, color .3s; }
+        .vibe-cat:hover .vibe-cat-enter { background: #111; color: #fff; }
+
+        /* ===== 弹出层：背景虚化 + 卡片漂浮 ===== */
+        .vibe-modal { position: fixed; inset: 0; z-index: 5000; display: none; }
+        .vibe-modal.open { display: block; }
+        .vibe-modal-backdrop { position: absolute; inset: 0; background: rgba(244,244,244,.6); backdrop-filter: blur(20px) saturate(1.05); -webkit-backdrop-filter: blur(20px) saturate(1.05); animation: vmFade .35s ease; }
+        @keyframes vmFade { from { opacity: 0; } to { opacity: 1; } }
+        .vibe-modal-scroll { position: relative; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4.5rem 5vw 4rem; }
+        .vibe-modal-head { max-width: 1080px; margin: 0 auto 2.4rem; display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+        .vibe-modal-head h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 400; letter-spacing: -.01em; }
+        .vibe-modal-head .vm-sub { font-family: monospace; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: #888; }
+        .vibe-modal-close { position: fixed; top: 1.4rem; right: 1.6rem; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 1px solid #111; background: #fff; color: #111; font-size: 1.25rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .3s, color .3s, transform .3s; }
+        .vibe-modal-close:hover { background: #111; color: #fff; transform: rotate(90deg); }
+        .vibe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.8rem; max-width: 1080px; margin: 0 auto; }
+        .vibe-proj { display: block; text-decoration: none; color: inherit; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 34px rgba(0,0,0,.1); opacity: 0; transform: translateY(26px); animation: vProjIn .55s cubic-bezier(.2,.8,.2,1) forwards; }
+        @keyframes vProjIn { to { opacity: 1; transform: translateY(0); } }
+        .vibe-proj-inner { animation: vFloat 5s ease-in-out infinite; }
+        @keyframes vFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+        .vibe-proj:hover { box-shadow: 0 24px 54px rgba(0,0,0,.2); }
+        .vibe-proj:hover .vibe-proj-inner { animation-play-state: paused; transform: translateY(-9px); transition: transform .35s ease; }
+        .vibe-proj:nth-child(1){ animation-delay:.04s } .vibe-proj:nth-child(2){ animation-delay:.11s } .vibe-proj:nth-child(3){ animation-delay:.18s } .vibe-proj:nth-child(4){ animation-delay:.25s }
+        .vibe-proj:nth-child(2) .vibe-proj-inner{ animation-delay:-1.2s } .vibe-proj:nth-child(3) .vibe-proj-inner{ animation-delay:-2.4s } .vibe-proj:nth-child(4) .vibe-proj-inner{ animation-delay:-3.6s }
+        .vibe-proj-cover { aspect-ratio: 4/3; background: #000; overflow: hidden; }
+        .vibe-proj-cover img, .vibe-proj-cover video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+        .vibe-proj:hover .vibe-proj-cover img, .vibe-proj:hover .vibe-proj-cover video { transform: scale(1.05); }
+        .vibe-proj-body { padding: .95rem 1.05rem 1.15rem; }
+        .vibe-proj-tag { font-family: monospace; font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; color: #999; }
+        .vibe-proj-name { margin-top: .4rem; font-size: 1.02rem; font-weight: 600; line-height: 1.25; }
+        @media (prefers-reduced-motion: reduce) { .vibe-proj-inner { animation: none; } .vibe-proj { animation: none; opacity: 1; transform: none; } }
+        @media (max-width: 700px) {
+            .vibe-cats { grid-template-columns: 1fr; gap: 1.2rem; }
+            .vibe-modal-scroll { padding: 4rem 1.1rem 3rem; }
+            .vibe-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.1rem; }
+            .vibe-proj-body { padding: .7rem .8rem .9rem; }
+            .vibe-proj-name { font-size: .9rem; }
+            .vibe-modal-close { top: 1rem; right: 1rem; }
+        }
+
         /* 作品列表区 */
         .project-list { display: flex; flex-direction: column; gap: 4rem; }
         .project-item {
@@ -461,189 +519,67 @@
             </div>
 
             <div class="category-content active" id="interactive">
-                <section class="project-list">
+                                <div class="vibe-cats">
 
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="TYPOGRAPHY TOOL · FONT MIXING" data-zh="排版工具 · 逐字混排">TYPOGRAPHY TOOL · FONT MIXING</span>
+                    <button type="button" class="vibe-cat" data-cat="art">
+                        <div class="vibe-cat-collage c4">
+                            <img src="assets/51.png" alt="" loading="lazy">
+                            <img src="assets/cover03.png" alt="" loading="lazy">
+                            <img src="assets/eyes-cover.jpg" alt="" loading="lazy">
+                            <img src="assets/proof-cover.jpg" alt="" loading="lazy">
+                        </div>
+                        <div class="vibe-cat-body">
+                            <div>
+                                <span class="vibe-cat-name" data-en="Interactive Art" data-zh="交互艺术">Interactive Art</span>
+                                <span class="vibe-cat-sub" data-en="4 projects" data-zh="4 个项目">4 projects</span>
                             </div>
-                            <h2 class="project-title"><a href="project-mixweight.html" data-en="Mixweight" data-zh="字重混排生成器">Mixweight</a></h2>
-                            <p class="project-desc" data-en="A typography tool that mixes fonts and weights letter by letter, exporting editable text to Illustrator / InDesign / Photoshop." data-zh="一个把字体与字重逐字母混排的排版工具，结果可导出到 Illustrator / InDesign / Photoshop 继续编辑。">A typography tool that mixes fonts and weights letter by letter, exporting editable text to Illustrator / InDesign / Photoshop. Chinese localization and UI rework on top of the open-source Mixweight.</p>
-                            <a href="project-mixweight.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
                         </div>
-                        <div class="project-media">
-                            <a href="project-mixweight.html" class="media-link">
-                                <img src="assets/mixweight-cover.jpg" alt="字重混排生成器 封面">
-                            </a>
-                        </div>
-                    </article>
+                    </button>
 
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="GENERATIVE TOOL · ANIMATED SVG" data-zh="生成式工具 · 动态 SVG">GENERATIVE TOOL · ANIMATED SVG</span>
+                    <button type="button" class="vibe-cat" data-cat="tools">
+                        <div class="vibe-cat-collage c2">
+                            <img src="assets/liquid-cover.jpg" alt="" loading="lazy">
+                            <img src="assets/mixweight-cover.jpg" alt="" loading="lazy">
+                        </div>
+                        <div class="vibe-cat-body">
+                            <div>
+                                <span class="vibe-cat-name" data-en="Design Generator Tools" data-zh="设计生成器工具">Design Generator Tools</span>
+                                <span class="vibe-cat-sub" data-en="2 tools" data-zh="2 个工具">2 tools</span>
                             </div>
-                            <h2 class="project-title"><a href="project-liquid.html" data-en="Liquid Type Generator" data-zh="流体字效果生成器">Liquid Type Generator</a></h2>
-                            <p class="project-desc" data-en="A generative tool that turns text into flowing material — type a word, tune the font, weight and palette, and export a standalone animated SVG. Built with pure SVG + SMIL." data-zh="一个把文字变成流动材质的生成式工具——输入文字，调字体、字重与色谱，导出可独立播放的动态 SVG。纯 SVG + SMIL 实现。">A generative tool that turns text into flowing material — type a word, tune the font, weight and palette, and export a standalone animated SVG. Built with pure SVG + SMIL.</p>
-                            <a href="project-liquid.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
                         </div>
-                        <div class="project-media">
-                            <a href="project-liquid.html" class="media-link">
-                                <img src="assets/liquid-cover.jpg" alt="流体字效果生成器 封面">
-                            </a>
-                        </div>
-                    </article>
+                    </button>
 
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="ONLINE MULTIPLAYER & GESTURE INTERACTION" data-zh="在线多人与手势交互">ONLINE MULTIPLAYER & GESTURE INTERACTION</span>
+                    <button type="button" class="vibe-cat" data-cat="ai-native">
+                        <div class="vibe-cat-collage c1">
+                            <img src="assets/laideji-cover.jpg" alt="" loading="lazy">
+                        </div>
+                        <div class="vibe-cat-body">
+                            <div>
+                                <span class="vibe-cat-name" data-en="AI-Native" data-zh="AI 原生">AI-Native</span>
+                                <span class="vibe-cat-sub" data-en="1 product" data-zh="1 个产品">1 product</span>
                             </div>
-                            <h2 class="project-title"><a href="project-03.html">FragileWE</a></h2>
-                            <p class="project-desc" data-en="An online multiplayer computational artwork exploring the terrifying asymmetry between creation and destruction. Users employ real-time webcam gesture controls (ml5.js) to collaboratively build—and effortlessly destroy—fragile digital dominoes." data-zh="一个在线多人计算艺术作品，探索了创造与毁灭之间令人恐惧的不对称性。用户通过实时网络摄像头手势控制 (ml5.js)，共同构建——并轻易摧毁——脆弱的数字多米诺骨牌。">An online multiplayer computational artwork exploring the terrifying asymmetry between creation and destruction. Users employ real-time webcam gesture controls (ml5.js) to collaboratively build—and effortlessly destroy—fragile digital dominoes.</p>
-                            <a href="project-03.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
                         </div>
-                        <div class="project-media">
-                            <a href="project-03.html" class="media-link">
-                                <video src="assets/26.mp4" muted loop playsinline poster="assets/cover03.png" preload="none"></video>
-                            </a>
-                        </div>
-                    </article>
+                    </button>
 
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="INTERACTIVE DATA-VIZ · NODE.JS + UNITY" data-zh="交互数据装置 · Node.js + Unity">INTERACTIVE DATA-VIZ · NODE.JS + UNITY</span>
+                    <button type="button" class="vibe-cat" data-cat="game">
+                        <div class="vibe-cat-collage c3">
+                            <img src="assets/cover02.png" alt="" loading="lazy">
+                            <img src="assets/cover01.png" alt="" loading="lazy">
+                            <img src="assets/cover05.png" alt="" loading="lazy">
+                        </div>
+                        <div class="vibe-cat-body">
+                            <div>
+                                <span class="vibe-cat-name" data-en="Indie Games" data-zh="独立游戏">Indie Games</span>
+                                <span class="vibe-cat-sub" data-en="3 games" data-zh="3 个游戏">3 games</span>
                             </div>
-                            <h2 class="project-title"><a href="project-proof.html" data-en="Proof of Living" data-zh="生活的证明">Proof of Living</a></h2>
-                            <p class="project-desc" data-en="A local interactive installation that turns 123 shopping receipts into cost-scaled plastic bags falling into a glass box — everyday spending as a weighty, auto-ethnographic archive." data-zh="一件本地交互装置，把 123 张购物小票变成大小对应金额的塑料袋落进玻璃盒——让日常开销成为有重量的自传式数字档案。">A local interactive installation that turns 123 shopping receipts into cost-scaled plastic bags falling into a glass box — everyday spending as a weighty, auto-ethnographic archive.</p>
-                            <a href="project-proof.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
+                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
                         </div>
-                        <div class="project-media">
-                            <a href="project-proof.html" class="media-link">
-                                <img src="assets/proof-cover.jpg" alt="生活的证明">
-                            </a>
-                        </div>
-                    </article>
+                    </button>
 
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="INTERACTIVE PROJECTION · P5.JS + CV" data-zh="交互投影装置 · p5.js + CV">INTERACTIVE PROJECTION · P5.JS + CV</span>
-                            </div>
-                            <h2 class="project-title"><a href="project-eyes.html" data-en="Animistic Gaze" data-zh="万物有灵的凝视">Animistic Gaze</a></h2>
-                            <p class="project-desc" data-en="An interactive projection installation: green ASCII eyes watch you from everyday objects, and vanish the instant you turn to look — a metaphor for algorithmic surveillance." data-zh="一件交互投影装置：日常死物上投出的 ASCII 绿眼默默盯着你，一旦你转头去看便瞬间消失——算法监控的隐喻。">An interactive projection installation: green ASCII eyes watch you from everyday objects, and vanish the instant you turn to look — a metaphor for algorithmic surveillance.</p>
-                            <a href="project-eyes.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
-                        </div>
-                        <div class="project-media">
-                            <a href="project-eyes.html" class="media-link">
-                                <img src="assets/eyes-cover.jpg" alt="万物有灵的凝视">
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="WEB DEVELOPMENT" data-zh="网页搭建">WEB DEVELOPMENT</span>
-                                <span>/</span>
-                                <span data-en="MA COMPUTATIONAL ARTS EXHIBITION" data-zh="计算艺术硕士毕业展">MA COMPUTATIONAL ARTS EXHIBITION</span>
-                            </div>
-                            <h2 class="project-title"><a href="https://sites.gold.ac.uk/ma-mfa-computationalarts/exhibition-2026/" target="_blank" rel="noopener" data-en="Goldsmiths Graduation Exhibition" data-zh="伦敦大学金史密斯学院毕业展">Goldsmiths Graduation Exhibition</a></h2>
-                            <p class="project-desc" data-en="Designed and built the official website for the 2026 MA/MFA Computational Arts Graduation Exhibition at Goldsmiths, University of London." data-zh="为伦敦大学金史密斯学院 2026 届计算艺术硕士毕业展设计并搭建的官方展览网站。">Designed and built the official website for the 2026 MA/MFA Computational Arts Graduation Exhibition at Goldsmiths, University of London.</p>
-                            <a href="https://sites.gold.ac.uk/ma-mfa-computationalarts/exhibition-2026/" target="_blank" rel="noopener" class="read-more" data-en="Visit Site ->" data-zh="访问网站 ->">Visit Site -></a>
-                        </div>
-                        <div class="project-media">
-                            <a href="https://sites.gold.ac.uk/ma-mfa-computationalarts/exhibition-2026/" target="_blank" rel="noopener" class="media-link">
-                                <img src="assets/exhibition-cover.png" alt="Goldsmiths Graduation Exhibition">
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="INTERACTIVE WEB ARCHIVE & GAME" data-zh="交互网页档案与游戏">INTERACTIVE WEB ARCHIVE & GAME</span>
-                            </div>
-                            <h2 class="project-title"><a href="project-01.html">MarriagEmArkeT</a></h2>
-                            <p class="project-desc" data-en="A speculative web archive and interactive game that critically examines the &quot;quantified intimacy&quot; of modern dating markets. Through absurd gamified mechanics, it challenges the commodification of human relationships under algorithmic matchmaking." data-zh="一个推测性网页档案与交互游戏，批判性地审视了现代相亲市场中的“量化亲密关系”。通过荒诞的游戏化机制，挑战了算法匹配下人类情感的商品化倾向。">A speculative web archive and interactive game that critically examines the "quantified intimacy" of modern dating markets. Through absurd gamified mechanics, it challenges the commodification of human relationships under algorithmic matchmaking.</p>
-                            <a href="project-01.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
-                        </div>
-                        <div class="project-media">
-                            <a href="project-01.html" class="media-link">
-                                <img src="assets/cover01.png" alt="MarriagEmArkeT Cover">
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="TEAM OF 3" data-zh="三人团队">TEAM OF 3</span>
-                                <span>/</span>
-                                <span data-en="MOTION CAPTURE & GAME" data-zh="动作捕捉与游戏">MOTION CAPTURE & GAME</span>
-                            </div>
-                            <h2 class="project-title"><a href="project-02.html">/imagine:salmon</a></h2>
-                            <p class="project-desc" data-en="A darkly comedic survival game where players control a piece of salmon sashimi. Utilizing motion capture and glitch aesthetics, it explores bodily alienation and the absurdity of existing as &quot;erroneous data&quot; under the algorithmic gaze." data-zh="一款黑色幽默生存游戏，玩家将控制一块三文鱼刺身。利用动捕技术与故障美学，探讨了在算法凝视下作为“错误数据”存在的身体异化与荒诞感。">A darkly comedic survival game where players control a piece of salmon sashimi. Utilizing motion capture and glitch aesthetics, it explores bodily alienation and the absurdity of existing as "erroneous data" under the algorithmic gaze.</p>
-                            <a href="project-02.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
-                        </div>
-                        <div class="project-media">
-                            <a href="project-02.html" class="media-link">
-                                <img src="assets/cover02.png" alt="/imagine:salmon Cover">
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="SOLO" data-zh="个人项目">SOLO</span>
-                                <span>/</span>
-                                <span data-en="WEBCAM-BASED DIGITAL ORACLE" data-zh="基于摄像头的数字神谕">WEBCAM-BASED DIGITAL ORACLE</span>
-                            </div>
-                            <h2 class="project-title"><a href="project-04.html" data-en="Actually I've already decided, But I still want to ask..." data-zh="其实我已经决定了，但我还是想问问...">Actually I've already decided, But I still want to ask...</a></h2>
-                            <p class="project-desc" data-en="An interactive, webcam-based digital oracle that playfully reimagines the &quot;Magic 8-Ball.&quot; Utilizing facial tracking and hand gestures, users summon a 3D angel for guidance, featuring a cathartic &quot;burning&quot; ritual to reject unwanted advice and affirm inner choices." data-zh="一个基于摄像头的交互式数字神谕，戏谑地重构了“魔法8号球”。利用面部追踪与手势，用户可召唤 3D 天使获取指引，并通过一种宣泄式的“燃烧”仪式来拒绝不想要的建议，从而坚定内心的选择。">An interactive, webcam-based digital oracle that playfully reimagines the "Magic 8-Ball." Utilizing facial tracking and hand gestures, users summon a 3D angel for guidance, featuring a cathartic "burning" ritual to reject unwanted advice and affirm inner choices.</p>
-                            <a href="project-04.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
-                        </div>
-                        <div class="project-media">
-                            <a href="project-04.html" class="media-link">
-                                <video src="assets/好的.mp4" muted loop playsinline poster="assets/51.png" preload="none"></video>
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="project-item">
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="tag-team" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span>
-                                <span>/</span>
-                                <span data-en="INTERACTIVE NARRATIVE & DIGITAL MONUMENT" data-zh="交互叙事与数字纪念碑">INTERACTIVE NARRATIVE & DIGITAL MONUMENT</span>
-                            </div>
-                            <h2 class="project-title"><a href="project-06.html" data-en="It's so quiet, I thought we'd always have something to talk about" data-zh="好安静我以为我们永远有话说">It's so quiet, I thought we'd always have something to talk about</a></h2>
-                            <p class="project-desc" data-en="A digital monument and interactive narrative critiquing the &quot;Dead Internet Theory.&quot; It translates the invisible statistics of bot dominance into an inescapable Penrose loop, visualizing the internet's decay into algorithmic &quot;data sludge.&quot;" data-zh="一个批判“死互联网理论”的数字纪念碑与交互叙事。它将机器人主导的不可见数据转化为令人绝望的彭罗斯死循环，将互联网向算法“数据污泥”的衰退过程可视化。">A digital monument and interactive narrative critiquing the "Dead Internet Theory." It translates the invisible statistics of bot dominance into an inescapable Penrose loop, visualizing the internet's decay into algorithmic "data sludge."</p>
-                            <a href="project-06.html" class="read-more" data-en="Full Project ->" data-zh="查看完整项目 ->">Full Project -></a>
-                        </div>
-                        <div class="project-media">
-                            <a href="project-06.html" class="media-link">
-                                <img src="assets/cover05.png" alt="It's quiet Cover">
-                            </a>
-                        </div>
-                    </article>
-
-                </section>
+                </div>
             </div>
 
             <div class="category-content" id="brand">
@@ -684,7 +620,25 @@
                         </div>
                     </article>
 
-                    <article class="project-item">
+                                        <article class="project-item">
+                        <div class="project-info">
+                            <div class="project-tags">
+                                <span class="tag-team" data-en="WEB DEVELOPMENT" data-zh="网页搭建">WEB DEVELOPMENT</span>
+                                <span>/</span>
+                                <span data-en="MA COMPUTATIONAL ARTS EXHIBITION" data-zh="计算艺术硕士毕业展">MA COMPUTATIONAL ARTS EXHIBITION</span>
+                            </div>
+                            <h2 class="project-title"><a href="https://sites.gold.ac.uk/ma-mfa-computationalarts/exhibition-2026/" target="_blank" rel="noopener" data-en="Goldsmiths Graduation Exhibition" data-zh="伦敦大学金史密斯学院毕业展">Goldsmiths Graduation Exhibition</a></h2>
+                            <p class="project-desc" data-en="Designed and built the official website for the 2026 MA/MFA Computational Arts Graduation Exhibition at Goldsmiths, University of London." data-zh="为伦敦大学金史密斯学院 2026 届计算艺术硕士毕业展设计并搭建的官方展览网站。">Designed and built the official website for the 2026 MA/MFA Computational Arts Graduation Exhibition at Goldsmiths, University of London.</p>
+                            <a href="https://sites.gold.ac.uk/ma-mfa-computationalarts/exhibition-2026/" target="_blank" rel="noopener" class="read-more" data-en="Visit Site -&gt;" data-zh="访问网站 -&gt;">Visit Site -&gt;</a>
+                        </div>
+                        <div class="project-media">
+                            <a href="https://sites.gold.ac.uk/ma-mfa-computationalarts/exhibition-2026/" target="_blank" rel="noopener" class="media-link">
+                                <img src="assets/exhibition-cover.png" alt="Goldsmiths Graduation Exhibition">
+                            </a>
+                        </div>
+                    </article>
+
+<article class="project-item">
                         <div class="project-info">
                             <div class="project-tags">
                                 <span class="tag-team" data-en="TEAM OF 2" data-zh="两人团队">TEAM OF 2</span>
@@ -838,6 +792,150 @@
 
                 </section>
             </div>
+
+
+        <!-- Vibecoding 分类弹出层（背景虚化 + 卡片漂浮） -->
+        <div class="vibe-modal" id="vibe-modal-art" aria-hidden="true">
+            <div class="vibe-modal-backdrop"></div>
+            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
+            <div class="vibe-modal-scroll">
+                <div class="vibe-modal-head">
+                    <h2 data-en="Interactive Art" data-zh="交互艺术">Interactive Art</h2>
+                    <span class="vm-sub" data-en="Installations · web · gesture &amp; projection" data-zh="装置 · 网页 · 手势与投影">Installations · web · gesture &amp; projection</span>
+                </div>
+                <div class="vibe-grid">
+                    <a class="vibe-proj" href="project-04.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/51.png" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Digital Oracle" data-zh="个人项目 · 数字神谕">SOLO · Digital Oracle</div>
+                                <div class="vibe-proj-name" data-en="Actually I've already decided, But I still want to ask..." data-zh="其实我已经决定了，但我还是想问问...">Actually I've already decided, But I still want to ask...</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-03.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/cover03.png" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Multiplayer Gesture" data-zh="个人项目 · 多人手势交互">SOLO · Multiplayer Gesture</div>
+                                <div class="vibe-proj-name" data-en="FragileWE" data-zh="FragileWE">FragileWE</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-eyes.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/eyes-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Interactive Projection" data-zh="个人项目 · 交互投影">SOLO · Interactive Projection</div>
+                                <div class="vibe-proj-name" data-en="Animistic Gaze" data-zh="万物有灵的凝视">Animistic Gaze</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-proof.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/proof-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Data Installation" data-zh="个人项目 · 交互数据装置">SOLO · Data Installation</div>
+                                <div class="vibe-proj-name" data-en="Proof of Living" data-zh="生活的证明">Proof of Living</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="vibe-modal" id="vibe-modal-tools" aria-hidden="true">
+            <div class="vibe-modal-backdrop"></div>
+            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
+            <div class="vibe-modal-scroll">
+                <div class="vibe-modal-head">
+                    <h2 data-en="Design Generator Tools" data-zh="设计生成器工具">Design Generator Tools</h2>
+                    <span class="vm-sub" data-en="Generative design tools you can use" data-zh="可直接上手的设计生成器">Generative design tools you can use</span>
+                </div>
+                <div class="vibe-grid">
+                    <a class="vibe-proj" href="project-liquid.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/liquid-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Generative Tool" data-zh="个人项目 · 生成式工具">SOLO · Generative Tool</div>
+                                <div class="vibe-proj-name" data-en="Liquid Type Generator" data-zh="流体字效果生成器">Liquid Type Generator</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-mixweight.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/mixweight-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Typography Tool" data-zh="个人项目 · 排版工具">SOLO · Typography Tool</div>
+                                <div class="vibe-proj-name" data-en="Mixweight" data-zh="字重混排生成器">Mixweight</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="vibe-modal" id="vibe-modal-ai-native" aria-hidden="true">
+            <div class="vibe-modal-backdrop"></div>
+            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
+            <div class="vibe-modal-scroll">
+                <div class="vibe-modal-head">
+                    <h2 data-en="AI-Native" data-zh="AI 原生">AI-Native</h2>
+                    <span class="vm-sub" data-en="Products built AI-native, 0 → 1" data-zh="AI 原生、从 0 到 1 的产品">Products built AI-native, 0 → 1</span>
+                </div>
+                <div class="vibe-grid">
+                    <a class="vibe-proj" href="project-laideji.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/laideji-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · AI-Native Product" data-zh="个人项目 · AI 原生产品">SOLO · AI-Native Product</div>
+                                <div class="vibe-proj-name" data-en="In Time!" data-zh="来得及！">In Time!</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="vibe-modal" id="vibe-modal-game" aria-hidden="true">
+            <div class="vibe-modal-backdrop"></div>
+            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
+            <div class="vibe-modal-scroll">
+                <div class="vibe-modal-head">
+                    <h2 data-en="Indie Games" data-zh="独立游戏">Indie Games</h2>
+                    <span class="vm-sub" data-en="Playable, critical games" data-zh="可玩的批判性游戏">Playable, critical games</span>
+                </div>
+                <div class="vibe-grid">
+                    <a class="vibe-proj" href="project-02.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/cover02.png" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="TEAM OF 3 · Mocap Game" data-zh="三人团队 · 动捕游戏">TEAM OF 3 · Mocap Game</div>
+                                <div class="vibe-proj-name" data-en="/imagine:salmon" data-zh="/imagine:salmon">/imagine:salmon</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-01.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/cover01.png" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Web Archive &amp; Game" data-zh="个人项目 · 交互网页游戏">SOLO · Web Archive &amp; Game</div>
+                                <div class="vibe-proj-name" data-en="MarriagEmArkeT" data-zh="MarriagEmArkeT">MarriagEmArkeT</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-06.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/cover05.png" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="TEAM OF 2 · Interactive Narrative" data-zh="两人团队 · 交互叙事">TEAM OF 2 · Interactive Narrative</div>
+                                <div class="vibe-proj-name" data-en="It's so quiet, I thought we'd always have something to talk about" data-zh="好安静我以为我们永远有话说">It's so quiet, I thought we'd always have something to talk about</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
 
             <section id="info" class="info-section">
                 <h2 class="info-heading" data-en="Info" data-zh="个人简介">Info</h2>
@@ -1225,6 +1323,33 @@
                 tab.addEventListener('mouseenter', activate); // 电脑：悬停切换
                 tab.addEventListener('click', activate);      // 电脑点击 + 手机点按
             });
+            // --------------------------------
+
+            // --- Vibecoding 分类弹出层（背景虚化 + 卡片漂浮） ---
+            const vibeCats = document.querySelectorAll('.vibe-cat');
+            const vibeModals = document.querySelectorAll('.vibe-modal');
+            function closeVibeModals() {
+                vibeModals.forEach(m => { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); });
+                document.body.style.overflow = '';
+            }
+            vibeCats.forEach(card => {
+                card.addEventListener('click', () => {
+                    const m = document.getElementById('vibe-modal-' + card.dataset.cat);
+                    if (!m) return;
+                    m.classList.add('open');
+                    m.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden';
+                    const sc = m.querySelector('.vibe-modal-scroll');
+                    if (sc) sc.scrollTop = 0;
+                });
+            });
+            vibeModals.forEach(m => {
+                const bd = m.querySelector('.vibe-modal-backdrop');
+                const cl = m.querySelector('.vibe-modal-close');
+                if (bd) bd.addEventListener('click', closeVibeModals);
+                if (cl) cl.addEventListener('click', closeVibeModals);
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVibeModals(); });
             // --------------------------------
 
             function switchLang(lang) {
