@@ -127,7 +127,7 @@
         /* ===== Vibecoding 四分类卡片 ===== */
         .vibe-cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.8rem; }
         .vibe-cat {
-            -webkit-appearance: none; appearance: none; font: inherit; color: inherit; text-align: left;
+            -webkit-appearance: none; appearance: none; font: inherit; color: inherit; text-align: left; text-decoration: none; display: block;
             position: relative; border: 1px solid #ddd; border-radius: 16px; overflow: hidden;
             background: #fff; cursor: pointer; padding: 0;
             transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
@@ -519,23 +519,20 @@
             </div>
 
             <div class="category-content active" id="interactive">
-                                <div class="vibe-cats">
+                <div class="vibe-cats">
 
-                    <button type="button" class="vibe-cat" data-cat="art">
-                        <div class="vibe-cat-collage c4">
-                            <img src="assets/51.png" alt="" loading="lazy">
-                            <img src="assets/cover03.png" alt="" loading="lazy">
-                            <img src="assets/eyes-cover.jpg" alt="" loading="lazy">
-                            <img src="assets/proof-cover.jpg" alt="" loading="lazy">
+                    <a class="vibe-cat" href="project-laideji.html">
+                        <div class="vibe-cat-collage c1">
+                            <img src="assets/laideji-cover.jpg" alt="" loading="lazy">
                         </div>
                         <div class="vibe-cat-body">
                             <div>
-                                <span class="vibe-cat-name" data-en="Interactive Art" data-zh="交互艺术">Interactive Art</span>
-                                <span class="vibe-cat-sub" data-en="5 projects" data-zh="5 个项目">5 projects</span>
+                                <span class="vibe-cat-name" data-en="AI-Native" data-zh="AI 原生">AI-Native</span>
+                                <span class="vibe-cat-sub" data-en="1 product" data-zh="1 个产品">1 product</span>
                             </div>
-                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
+                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="查看 -&gt;">Open -&gt;</span>
                         </div>
-                    </button>
+                    </a>
 
                     <button type="button" class="vibe-cat" data-cat="tools">
                         <div class="vibe-cat-collage c2">
@@ -551,20 +548,7 @@
                         </div>
                     </button>
 
-                    <button type="button" class="vibe-cat" data-cat="ai-native">
-                        <div class="vibe-cat-collage c1">
-                            <img src="assets/laideji-cover.jpg" alt="" loading="lazy">
-                        </div>
-                        <div class="vibe-cat-body">
-                            <div>
-                                <span class="vibe-cat-name" data-en="AI-Native" data-zh="AI 原生">AI-Native</span>
-                                <span class="vibe-cat-sub" data-en="1 product" data-zh="1 个产品">1 product</span>
-                            </div>
-                            <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
-                        </div>
-                    </button>
-
-                    <button type="button" class="vibe-cat" data-cat="game">
+                    <button type="button" class="vibe-cat" data-cat="inter">
                         <div class="vibe-cat-collage c3">
                             <img src="assets/cover02.png" alt="" loading="lazy">
                             <img src="assets/cover01.png" alt="" loading="lazy">
@@ -572,8 +556,8 @@
                         </div>
                         <div class="vibe-cat-body">
                             <div>
-                                <span class="vibe-cat-name" data-en="Indie Games" data-zh="独立游戏">Indie Games</span>
-                                <span class="vibe-cat-sub" data-en="3 games" data-zh="3 个游戏">3 games</span>
+                                <span class="vibe-cat-name" data-en="Interactive" data-zh="交互">Interactive</span>
+                                <span class="vibe-cat-sub" data-en="8 projects" data-zh="8 个项目">8 projects</span>
                             </div>
                             <span class="vibe-cat-enter" data-en="Open -&gt;" data-zh="点击展开 -&gt;">Open -&gt;</span>
                         </div>
@@ -795,13 +779,44 @@
 
 
         <!-- Vibecoding 分类弹出层（背景虚化 + 卡片漂浮） -->
-        <div class="vibe-modal" id="vibe-modal-art" aria-hidden="true">
+        <div class="vibe-modal" id="vibe-modal-tools" aria-hidden="true">
             <div class="vibe-modal-backdrop"></div>
             <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
             <div class="vibe-modal-scroll">
                 <div class="vibe-modal-head">
-                    <h2 data-en="Interactive Art" data-zh="交互艺术">Interactive Art</h2>
-                    <span class="vm-sub" data-en="Installations · web · gesture &amp; projection" data-zh="装置 · 网页 · 手势与投影">Installations · web · gesture &amp; projection</span>
+                    <h2 data-en="Design Generator Tools" data-zh="设计生成器工具">Design Generator Tools</h2>
+                    <span class="vm-sub" data-en="Generative design tools you can use" data-zh="可直接上手的设计生成器">Generative design tools you can use</span>
+                </div>
+                <div class="vibe-grid">
+                    <a class="vibe-proj" href="project-liquid.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/liquid-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Generative Tool" data-zh="个人项目 · 生成式工具">SOLO · Generative Tool</div>
+                                <div class="vibe-proj-name" data-en="Liquid Type Generator" data-zh="流体字效果生成器">Liquid Type Generator</div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="vibe-proj" href="project-mixweight.html">
+                        <div class="vibe-proj-inner">
+                            <div class="vibe-proj-cover"><img src="assets/mixweight-cover.jpg" alt="" loading="lazy"></div>
+                            <div class="vibe-proj-body">
+                                <div class="vibe-proj-tag" data-en="SOLO · Typography Tool" data-zh="个人项目 · 排版工具">SOLO · Typography Tool</div>
+                                <div class="vibe-proj-name" data-en="Mixweight" data-zh="字重混排生成器">Mixweight</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="vibe-modal" id="vibe-modal-inter" aria-hidden="true">
+            <div class="vibe-modal-backdrop"></div>
+            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
+            <div class="vibe-modal-scroll">
+                <div class="vibe-modal-head">
+                    <h2 data-en="Interactive" data-zh="交互">Interactive</h2>
+                    <span class="vm-sub" data-en="Installations · web · projection &amp; games" data-zh="装置 · 网页 · 投影 · 游戏">Installations · web · projection &amp; games</span>
                 </div>
                 <div class="vibe-grid">
                     <a class="vibe-proj" href="project-04.html">
@@ -849,72 +864,6 @@
                             </div>
                         </div>
                     </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="vibe-modal" id="vibe-modal-tools" aria-hidden="true">
-            <div class="vibe-modal-backdrop"></div>
-            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
-            <div class="vibe-modal-scroll">
-                <div class="vibe-modal-head">
-                    <h2 data-en="Design Generator Tools" data-zh="设计生成器工具">Design Generator Tools</h2>
-                    <span class="vm-sub" data-en="Generative design tools you can use" data-zh="可直接上手的设计生成器">Generative design tools you can use</span>
-                </div>
-                <div class="vibe-grid">
-                    <a class="vibe-proj" href="project-liquid.html">
-                        <div class="vibe-proj-inner">
-                            <div class="vibe-proj-cover"><img src="assets/liquid-cover.jpg" alt="" loading="lazy"></div>
-                            <div class="vibe-proj-body">
-                                <div class="vibe-proj-tag" data-en="SOLO · Generative Tool" data-zh="个人项目 · 生成式工具">SOLO · Generative Tool</div>
-                                <div class="vibe-proj-name" data-en="Liquid Type Generator" data-zh="流体字效果生成器">Liquid Type Generator</div>
-                            </div>
-                        </div>
-                    </a>
-                    <a class="vibe-proj" href="project-mixweight.html">
-                        <div class="vibe-proj-inner">
-                            <div class="vibe-proj-cover"><img src="assets/mixweight-cover.jpg" alt="" loading="lazy"></div>
-                            <div class="vibe-proj-body">
-                                <div class="vibe-proj-tag" data-en="SOLO · Typography Tool" data-zh="个人项目 · 排版工具">SOLO · Typography Tool</div>
-                                <div class="vibe-proj-name" data-en="Mixweight" data-zh="字重混排生成器">Mixweight</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="vibe-modal" id="vibe-modal-ai-native" aria-hidden="true">
-            <div class="vibe-modal-backdrop"></div>
-            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
-            <div class="vibe-modal-scroll">
-                <div class="vibe-modal-head">
-                    <h2 data-en="AI-Native" data-zh="AI 原生">AI-Native</h2>
-                    <span class="vm-sub" data-en="Products built AI-native, 0 → 1" data-zh="AI 原生、从 0 到 1 的产品">Products built AI-native, 0 → 1</span>
-                </div>
-                <div class="vibe-grid">
-                    <a class="vibe-proj" href="project-laideji.html">
-                        <div class="vibe-proj-inner">
-                            <div class="vibe-proj-cover"><img src="assets/laideji-cover.jpg" alt="" loading="lazy"></div>
-                            <div class="vibe-proj-body">
-                                <div class="vibe-proj-tag" data-en="SOLO · AI-Native Product" data-zh="个人项目 · AI 原生产品">SOLO · AI-Native Product</div>
-                                <div class="vibe-proj-name" data-en="In Time!" data-zh="来得及！">In Time!</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="vibe-modal" id="vibe-modal-game" aria-hidden="true">
-            <div class="vibe-modal-backdrop"></div>
-            <button type="button" class="vibe-modal-close" aria-label="Close">&times;</button>
-            <div class="vibe-modal-scroll">
-                <div class="vibe-modal-head">
-                    <h2 data-en="Indie Games" data-zh="独立游戏">Indie Games</h2>
-                    <span class="vm-sub" data-en="Playable, critical games" data-zh="可玩的批判性游戏">Playable, critical games</span>
-                </div>
-                <div class="vibe-grid">
                     <a class="vibe-proj" href="project-02.html">
                         <div class="vibe-proj-inner">
                             <div class="vibe-proj-cover"><img src="assets/cover02.png" alt="" loading="lazy"></div>
